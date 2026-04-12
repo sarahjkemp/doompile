@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Fix a Doom Pile When You Feel Overwhelmed | Doom Pile</title>
+<meta name="description" content="Practical, ADHD-friendly steps to actually start clearing your doom pile — even when everything feels too much.">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0E0E0F;
+  --bg2: #161618;
+  --border: rgba(255,255,255,0.08);
+  --text: #F0EEE8;
+  --muted: #6B6A66;
+  --muted2: #9B9A96;
+  --purple: #7C6FE0;
+  --purple-light: #A99EF0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-weight: 300; line-height: 1.75; }
+nav {
+  padding: 0 2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px;
+  background: rgba(14,14,15,0.95);
+  position: sticky; top: 0; z-index: 100;
+}
+.logo { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; text-decoration: none; color: var(--text); }
+.logo span { color: var(--purple-light); }
+.nav-links { display: flex; gap: 1.5rem; }
+.nav-links a { font-size: 0.85rem; color: var(--muted2); text-decoration: none; }
+.nav-links a:hover { color: var(--text); }
+main { max-width: 680px; margin: 0 auto; padding: 4rem 1.5rem 6rem; }
+h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 5vw, 2.6rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1.5rem; }
+h1 em { color: var(--purple-light); font-style: normal; }
+h2 { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; margin: 2.5rem 0 1rem; }
+h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--purple-light); }
+p { font-size: 0.95rem; color: var(--muted2); line-height: 1.8; margin-bottom: 1rem; }
+p strong { color: var(--text); font-weight: 500; }
+.intro { font-size: 1.05rem; color: var(--text); line-height: 1.8; margin-bottom: 2rem; }
+.step {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin: 1rem 0;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+.step-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--purple-light);
+  flex-shrink: 0;
+  width: 2rem;
+}
+.step-content h3 { margin: 0 0 0.25rem; color: var(--text); }
+.step-content p { margin: 0; font-size: 0.88rem; }
+.quote {
+  border-left: 3px solid var(--purple);
+  padding: 1rem 1.5rem;
+  margin: 2rem 0;
+  font-size: 1rem;
+  color: var(--text);
+  line-height: 1.6;
+  font-style: italic;
+}
+.cta-box {
+  background: linear-gradient(135deg, rgba(124,111,224,0.15), rgba(124,111,224,0.05));
+  border: 1px solid rgba(124,111,224,0.3);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  margin: 2.5rem 0;
+}
+.cta-box h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text); }
+.cta-box p { font-size: 0.9rem; color: var(--muted2); margin-bottom: 1.5rem; }
+.btn {
+  display: inline-block;
+  background: var(--purple);
+  color: white;
+  padding: 0.85rem 2rem;
+  border-radius: 999px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+.related { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+.related h3 { color: var(--muted2); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem; }
+.related-links { display: flex; flex-direction: column; gap: 0.75rem; }
+.related-links a { color: var(--purple-light); text-decoration: none; font-size: 0.9rem; }
+footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--muted); }
+footer a { color: var(--muted); text-decoration: none; margin: 0 0.5rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">doom<span>pile</span></a>
+  <div class="nav-links">
+    <a href="/">App</a>
+    <a href="/doompile-about.html">About</a>
+    <a href="/doompile-privacy.html">Privacy</a>
+    <a href="https://www.tiktok.com/@doompilesarah" target="_blank" style="display:flex;align-items:center;gap:6px;font-size:0.8rem;color:var(--muted2);text-decoration:none;background:var(--bg2);border:1px solid var(--border);border-radius:999px;padding:5px 12px;transition:border-color 0.15s" onmouseover="this.style.borderColor='#7C6FE0'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg>
+    @doompilesarah
+  </a>
+  </div>
+</nav>
+
+<main>
+  <h1>How to Fix a Doom Pile When <em>Everything Feels Too Much</em></h1>
+
+  <p class="intro">You know the pile is there. You know it needs dealing with. And yet every time you try to start, something stops you. This isn't a motivation problem. It's a friction problem — and friction can be removed.</p>
+
+  <p class="intro">Here's what actually works, from someone who has lived this and built a tool around it.</p>
+
+  <h2>First: stop trying to clear it all at once</h2>
+  <p>The biggest mistake people make with a doom pile is treating it as one task. It isn't. It's twenty tasks wearing a pile-shaped coat. Trying to "sort everything out" guarantees paralysis because the brain can't process that instruction.</p>
+  <p><strong>The goal isn't to clear the pile. The goal is to start.</strong> Just start. One thing. The momentum that follows will surprise you.</p>
+
+  <h2>The steps that actually work</h2>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <h3>Pick the thing with the most dread attached</h3>
+      <p>Not the easiest thing — the one that's been sitting heaviest. Often it's an unopened bill, an unanswered email, something with a deadline you've been avoiding. Starting there removes the most weight immediately.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <h3>Make the first action absurdly small</h3>
+      <p>Not "sort the bills." Just "open the envelope." Not "clean the kitchen." Just "put three things away." The action needs to be so small it feels almost pointless. That's the point — small enough to bypass the freeze.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <h3>Sort the environment before you start</h3>
+      <p>If you need music, put it on first. If you need a drink, get it. If you work better with background noise, find it. Don't try to power through in the wrong conditions — set the conditions and then start.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <h3>Remove every decision you can</h3>
+      <p>Decisions cost energy. If you have to decide what to do, when to do it, and how to do it all at once — you've spent the resources you needed to actually do it. Decide everything in advance. Better yet, let something else decide for you.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-content">
+      <h3>Don't aim to finish — aim to start again tomorrow</h3>
+      <p>The pile didn't build in a day. It won't clear in a day either. The goal is to establish a pattern of starting — not to achieve completion. Completion follows starting. Starting is the skill.</p>
+    </div>
+  </div>
+
+  <div class="quote">
+    "I stopped trying to clear my doom pile and started trying to just touch it. One envelope. One email. One thing. And somehow that was always enough to keep going."
+  </div>
+
+  <h2>Dealing with specific types of doom piles</h2>
+
+  <h3>Bills and financial admin</h3>
+  <p>Financial avoidance is one of the most common and damaging doom pile patterns. The longer bills go unopened, the more anxiety they carry — and often the more money they cost in missed direct debits, late fees, and missed switching opportunities. Start by opening everything and sorting into piles: urgent, non-urgent, can be ignored. Then deal with one urgent item only.</p>
+
+  <h3>Cleaning and physical clutter</h3>
+  <p>Physical clutter is uniquely draining for neurodivergent brains because it creates constant visual noise. The trick is to pick one surface — not one room, one surface — and clear only that. The visual relief of one clear surface creates momentum for the next.</p>
+
+  <h3>Emails and messages</h3>
+  <p>The inbox doom pile is often about the decisions each email requires. Try processing by type rather than by date — reply to everything that needs a one-sentence answer first, then deal with the harder ones. Archive anything older than a month that you haven't replied to. It's probably fine.</p>
+
+  <h3>Decisions you've been deferring</h3>
+  <p>Decision paralysis is real. If a decision has been sitting unmade for more than a week, the problem is usually that you're waiting for more information that isn't coming, or that both options feel equally risky. In that case, make a decision — any decision — and give yourself permission to change your mind later.</p>
+
+  <div class="cta-box">
+    <h3>Stop staring at your pile. Start clearing it.</h3>
+    <p>Doom Pile removes the friction that stops you starting — on bills, cleaning, food, plans, sleep and more. Built for brains that get stuck. First try of every mode is free.</p>
+    <a href="/" class="btn">Start clearing now →</a>
+  </div>
+
+  <h2>When to ask for help</h2>
+  <p>If your doom pile has grown to the point where it's affecting your finances, your relationships, or your mental health — it may be a sign of underlying executive dysfunction that would benefit from professional support. Speak to your GP about an ADHD or autism assessment. The pile is a symptom, not the cause.</p>
+
+  <div class="related">
+    <h3>Related reading</h3>
+    <div class="related-links">
+      <a href="/doompile-what-is.html">What is a doom pile? →</a>
+      <a href="/doompile-why-piles.html">Why you create doom piles and can't start sorting them →</a>
+      <a href="/doompile-about.html">About Doom Pile — built by someone who lives this →</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  © 2026 SJK Labs ·
+  <a href="/">App</a>
+  <a href="/doompile-about.html">About</a>
+  <a href="/doompile-privacy.html">Privacy</a>
+  <a href="/doompile-terms.html">Terms</a>
+  <a href="/cdn-cgi/l/email-protection#acc4c9c0c0c3ecc8c3c3c1dcc5c0c982cfc382d9c7"><span cla

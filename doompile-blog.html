@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — Doom Pile</title>
+<meta name="description" content="Practical, honest writing about doom piles, executive dysfunction, and the brains that create them.">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0E0E0F;
+  --bg2: #161618;
+  --border: rgba(255,255,255,0.08);
+  --text: #F0EEE8;
+  --muted: #6B6A66;
+  --muted2: #9B9A96;
+  --purple: #7C6FE0;
+  --purple-light: #A99EF0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-weight: 300; line-height: 1.75; }
+nav {
+  padding: 0 2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px;
+  background: rgba(14,14,15,0.95);
+  position: sticky; top: 0; z-index: 100;
+}
+.logo { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; text-decoration: none; color: var(--text); }
+.logo span { color: var(--purple-light); }
+.nav-links { display: flex; gap: 1.5rem; }
+.nav-links a { font-size: 0.85rem; color: var(--muted2); text-decoration: none; }
+.nav-links a:hover { color: var(--text); }
+.nav-links a.active { color: var(--text); }
+main { max-width: 720px; margin: 0 auto; padding: 4rem 1.5rem 6rem; }
+.hero { margin-bottom: 3rem; }
+.hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 2.8rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1rem; }
+.hero h1 em { color: var(--purple-light); font-style: normal; }
+.hero p { font-size: 0.95rem; color: var(--muted2); max-width: 520px; }
+.article-card {
+  display: block;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.75rem;
+  margin-bottom: 1rem;
+  text-decoration: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+.article-card:hover {
+  border-color: rgba(124,111,224,0.4);
+  background: rgba(124,111,224,0.05);
+}
+.article-tag {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--purple-light);
+  margin-bottom: 0.5rem;
+}
+.article-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+.article-desc {
+  font-size: 0.88rem;
+  color: var(--muted2);
+  line-height: 1.65;
+}
+.article-arrow {
+  font-size: 0.85rem;
+  color: var(--purple-light);
+  margin-top: 0.75rem;
+  display: block;
+}
+.cta-box {
+  background: linear-gradient(135deg, rgba(124,111,224,0.15), rgba(124,111,224,0.05));
+  border: 1px solid rgba(124,111,224,0.3);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  margin-top: 3rem;
+}
+.cta-box h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+.cta-box p { font-size: 0.88rem; color: var(--muted2); margin-bottom: 1.25rem; }
+.btn {
+  display: inline-block;
+  background: var(--purple);
+  color: white;
+  padding: 0.8rem 1.75rem;
+  border-radius: 999px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--muted); margin-top: 4rem; }
+footer a { color: var(--muted); text-decoration: none; margin: 0 0.5rem; }
+footer a:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">doom<span>pile</span></a>
+  <div class="nav-links">
+    <a href="/">App</a>
+    <a href="/doompile-blog.html" class="active">Blog</a>
+    <a href="/doompile-about.html">About</a>
+    <a href="/doompile-privacy.html">Privacy</a>
+    <a href="https://www.tiktok.com/@doompilesarah" target="_blank" style="display:flex;align-items:center;gap:6px;font-size:0.8rem;color:var(--muted2);text-decoration:none;background:var(--bg2);border:1px solid var(--border);border-radius:999px;padding:5px 12px;transition:border-color 0.15s" onmouseover="this.style.borderColor='#7C6FE0'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg>
+    @doompilesarah
+  </a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <h1>Honest writing for <em>brains that get stuck.</em></h1>
+    <p>The psychology of doom piles, executive dysfunction, and why most advice doesn't work — from someone who lives it.</p>
+  </div>
+
+  <a href="/doompile-what-is.html" class="article-card">
+    <div class="article-tag">Understanding doom piles</div>
+    <div class="article-title">What is a Doom Pile?</div>
+    <div class="article-desc">A doom pile is the pile of things you know you need to deal with — but can't. Bills you haven't opened. Laundry that's been on the chair for two weeks. Here's why it happens and what's actually going on in your brain.</div>
+    <span class="article-arrow">Read more →</span>
+  </a>
+
+  <a href="/doompile-how-to-fix.html" class="article-card">
+    <div class="article-tag">Practical guide</div>
+    <div class="article-title">How to Fix a Doom Pile When Everything Feels Too Much</div>
+    <div class="article-desc">You know the pile is there. You know it needs dealing with. And yet every time you try to start, something stops you. This isn't a motivation problem — it's a friction problem. Here's what actually works.</div>
+    <span class="article-arrow">Read more →</span>
+  </a>
+
+  <a href="/doompile-why-piles.html" class="article-card">
+    <div class="article-tag">Psychology</div>
+    <div class="article-title">Why You Create Doom Piles (and Can't Start Sorting Them)</div>
+    <div class="article-desc">The reason you create doom piles — and the reason you can't clear them — is rooted in how your brain actually works. Once you understand it, the pile stops being a source of shame and starts being something you can do something about.</div>
+    <span class="article-arrow">Read more →</span>
+  </a>
+
+  <div class="cta-box">
+    <h3>Ready to actually clear your pile?</h3>
+    <p>First try of every mode is free. No card required.</p>
+    <a href="/" class="btn">Try Doom Pile →</a>
+  </div>
+</main>
+
+<footer>
+  © 2026 SJK Labs ·
+  <a href="/">App</a>
+  <a href="/doompile-blog.html">Blog</a>
+  <a href="/doompile-about.html">About</a>
+  <a href="/doompile-privacy.html">Privacy</a>
+  <a href="/doompile-terms.html">Terms</a>
+  <a href="/cdn-cgi/l/email-protection#e28a878e8e8da2868d8d8f928b8e87cc818dcc9789"><span cla

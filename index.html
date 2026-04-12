@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<!-- saved from url=(0059)file:///Users/sarahkemp/Downloads/doompile-final-v16_5.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doom Pile — clear your pile</title>
+<link href="./index_files/css2" rel="stylesheet">
+<style>
+:root {
+  --bg: #0E0E0F;
+  --bg2: #161618;
+  --bg3: #1E1E21;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #F0EEE8;
+  --muted: #6B6A66;
+  --muted2: #9B9A96;
+  --purple: #7C6FE0;
+  --purple-light: #A99EF0;
+  --purple-bg: rgba(124,111,224,0.12);
+  --green: #4ADE80;
+  --green-bg: rgba(74,222,128,0.1);
+  --amber: #FBB040;
+  --amber-bg: rgba(251,176,64,0.1);
+  --coral: #F97066;
+  --coral-bg: rgba(249,112,102,0.1);
+  --blue: #60A5FA;
+  --blue-bg: rgba(96,165,250,0.1);
+  --pink: #F472B6;
+  --pink-bg: rgba(244,114,182,0.1);
+  --teal: #2DD4BF;
+  --teal-bg: rgba(45,212,191,0.1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-weight: 300;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(14,14,15,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1rem;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+}
+nav::-webkit-scrollbar { display: none; }
+.nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  padding: 0 1rem 0 0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid var(--border);
+  margin-right: 0.5rem;
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+.nav-logo span { color: var(--purple-light); }
+.nav-tab {
+  padding: 0 0.75rem;
+  height: 48px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  user-select: none;
+  display: flex; align-items: center; gap: 5px;
+  flex-shrink: 0;
+}
+.nav-tab:hover { color: var(--text); }
+.nav-tab.active { color: var(--text); border-bottom-color: var(--purple-light); }
+.nav-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+/* ── MAIN ── */
+main { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 6rem; }
+
+/* ── SCREENS ── */
+.screen { display: none; }
+.screen.active { display: block; animation: fadeUp 0.3s ease; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── HOME ── */
+.home-hero { text-align: center; padding: 2rem 1rem 1rem; }
+.home-hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2.2rem, 6vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin-bottom: 1rem;
+}
+.home-hero h1 em { color: var(--purple-light); font-style: normal; }
+.home-hero p { color: var(--muted2); font-size: 1rem; max-width: 380px; margin: 0 auto 2.5rem; line-height: 1.7; }
+.pile-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+@media(min-width:500px){ .pile-grid { grid-template-columns: repeat(3, 1fr); } }
+.pile-btn {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem 1rem;
+  background: var(--bg2);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  text-align: left;
+}
+.pile-btn:hover { border-color: var(--border2); background: var(--bg3); }
+.pile-emoji { font-size: 1.5rem; margin-bottom: 8px; }
+.pile-btn-name { font-size: 0.9rem; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+.pile-btn-desc { font-size: 0.75rem; color: var(--muted); line-height: 1.4; }
+
+/* ── SHARED COMPONENTS ── */
+.screen-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.4rem;
+}
+.screen-sub { font-size: 0.9rem; color: var(--muted2); margin-bottom: 2rem; line-height: 1.6; }
+
+.field { margin-bottom: 1.25rem; }
+.field label { display: block; font-size: 0.8rem; color: var(--muted2); margin-bottom: 6px; letter-spacing: 0.04em; text-transform: uppercase; font-weight: 500; }
+.field input, .field select, .field textarea {
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 300;
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color 0.15s;
+  -webkit-appearance: none;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--purple); }
+.field select option { background: var(--bg2); }
+.field textarea { resize: none; height: 80px; }
+
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 0.82rem;
+  cursor: pointer;
+  background: var(--bg2);
+  color: var(--muted2);
+  transition: all 0.15s;
+  user-select: none;
+}
+.chip:hover { border-color: var(--border2); color: var(--text); }
+.chip.selected { background: var(--purple-bg); border-color: var(--purple); color: var(--purple-light); }
+
+.btn-go {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 12px;
+  border: none;
+  background: var(--purple);
+  color: white;
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: opacity 0.15s, transform 0.1s;
+  letter-spacing: -0.01em;
+}
+.btn-go:hover { opacity: 0.88; }
+.btn-go:active { transform: scale(0.98); }
+.btn-go:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ── LOADING ── */
+.loading { display: none; text-align: center; padding: 3rem 1rem; }
+.loading.active { display: block; }
+.loading-ring {
+  width: 44px; height: 44px;
+  border: 3px solid var(--border);
+  border-top-color: var(--purple);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 1.25rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-msg { color: var(--muted2); font-size: 0.9rem; }
+.loading-msgs span { display: none; }
+.loading-msgs span.active { display: inline; }
+
+/* ── RESULT CARD ── */
+.result { display: none; animation: fadeUp 0.4s ease; }
+.result.active { display: block; }
+.result-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+.result-card.highlight { border-color: var(--purple); background: var(--purple-bg); }
+.result-label { font-size: 0.72rem; color: var(--purple-light); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; margin-bottom: 8px; }
+.result-text { font-size: 0.92rem; color: var(--text); line-height: 1.7; }
+.result-text strong { font-weight: 500; color: var(--purple-light); }
+
+.saving-big { font-family: 'Syne', sans-serif; font-size: 2.5rem; font-weight: 700; color: var(--green); letter-spacing: -0.03em; }
+.saving-sub { font-size: 0.85rem; color: var(--muted2); margin-top: 4px; }
+
+.step-list { list-style: none; }
+.step-item {
+  display: flex; gap: 14px;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+.step-item:last-child { border-bottom: none; }
+.step-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--bg3); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; flex-shrink: 0; color: var(--muted2);
+  transition: background 0.2s, border-color 0.2s;
+}
+.step-item.done .step-num { background: var(--green-bg); border-color: var(--green); color: var(--green); }
+.step-title { font-size: 0.9rem; font-weight: 500; margin-bottom: 3px; color: var(--text); }
+.step-desc { font-size: 0.82rem; color: var(--muted2); line-height: 1.5; }
+.step-item.done .step-title { text-decoration: line-through; opacity: 0.5; }
+
+.action-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  transition: opacity 0.15s;
+  margin: 4px 4px 0 0;
+}
+.action-pill:hover { opacity: 0.82; }
+.action-pill.purple { background: var(--purple); color: white; }
+.action-pill.green { background: var(--green-bg); color: var(--green); border: 1px solid rgba(74,222,128,0.3); }
+.action-pill.ghost { background: var(--bg3); color: var(--muted2); border: 1px solid var(--border); }
+
+.sms-box {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 0.75rem 0;
+}
+.sms-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+.sms-msg { font-family: monospace; font-size: 0.85rem; color: var(--muted2); background: var(--bg); padding: 8px 10px; border-radius: 6px; margin-bottom: 10px; }
+
+.playlist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0.75rem 0; }
+.playlist-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem;
+  text-decoration: none;
+  transition: border-color 0.15s;
+  display: block;
+}
+.playlist-card:hover { border-color: var(--green); }
+.playlist-vibe { font-size: 0.75rem; color: var(--green); margin-bottom: 4px; font-weight: 500; }
+.playlist-name { font-size: 0.85rem; color: var(--text); }
+
+.venue-card {
+  background: var(--bg2);
+  border: 1px solid var(--amber);
+  border-radius: 14px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+.venue-name { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 6px; }
+.venue-meta { font-size: 0.82rem; color: var(--muted2); margin-bottom: 1rem; line-height: 1.6; }
+.venue-why { font-size: 0.85rem; color: var(--amber); font-style: italic; margin-bottom: 1rem; }
+
+.event-card {
+  background: var(--bg2);
+  border: 1px solid var(--blue);
+  border-radius: 14px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+.event-name { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 6px; }
+.event-meta { font-size: 0.82rem; color: var(--muted2); margin-bottom: 1rem; }
+.event-why { font-size: 0.85rem; color: var(--blue); font-style: italic; margin-bottom: 1rem; }
+
+.check-in-card {
+  background: var(--bg2);
+  border: 1px solid var(--pink);
+  border-radius: 14px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.reset-btn { background: none; border: none; color: var(--muted); font-size: 0.82rem; cursor: pointer; margin-top: 1.5rem; font-family: inherit; }
+.reset-btn:hover { color: var(--text); }
+
+/* ── BILLS UPLOAD ── */
+.upload-zone {
+  border: 1.5px dashed var(--border);
+  border-radius: 14px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative;
+  background: var(--bg2);
+}
+.upload-zone:hover, .upload-zone.drag { border-color: var(--purple); background: var(--purple-bg); }
+.upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.upload-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+.upload-zone h3 { font-size: 0.95rem; font-weight: 500; margin-bottom: 0.4rem; }
+.upload-zone p { font-size: 0.82rem; color: var(--muted); }
+.file-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1rem; justify-content: center; }
+.file-chip {
+  background: var(--purple-bg); border: 1px solid var(--purple);
+  color: var(--purple-light); border-radius: 999px;
+  padding: 4px 12px; font-size: 0.78rem; display: flex; align-items: center; gap: 6px;
+}
+.file-chip button { background: none; border: none; color: var(--purple-light); cursor: pointer; font-size: 1rem; }
+
+/* ── UTIL ── */
+.divider { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+.tag { display: inline-block; font-size: 0.72rem; padding: 3px 10px; border-radius: 999px; font-weight: 500; margin-bottom: 12px; }
+.tag-new { background: var(--purple-bg); color: var(--purple-light); border: 1px solid var(--purple); }
+.done-banner { background: var(--green-bg); border: 1px solid rgba(74,222,128,0.3); border-radius: 14px; padding: 1.5rem; text-align: center; margin-top: 1.5rem; }
+.done-banner h3 { font-family: 'Syne', sans-serif; font-size: 1.3rem; color: var(--green); margin-bottom: 6px; }
+.done-banner p { font-size: 0.85rem; color: rgba(74,222,128,0.7); }
+
+.blog-section {
+  margin: 2.5rem 0 1rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.blog-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.blog-section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted2);
+}
+.blog-see-all {
+  font-size: 0.82rem;
+  color: var(--purple-light);
+  text-decoration: none;
+}
+.blog-card {
+  display: block;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 0.75rem;
+  text-decoration: none;
+  transition: border-color 0.15s;
+}
+.blog-card:hover { border-color: rgba(124,111,224,0.4); }
+.blog-card-tag {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--purple-light);
+  margin-bottom: 0.35rem;
+}
+.blog-card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.35rem;
+  line-height: 1.3;
+}
+.blog-card-desc {
+  font-size: 0.82rem;
+  color: var(--muted2);
+  line-height: 1.55;
+}
+</style>
+<!-- Google tag (gtag.js) -->
+<script async="" src="./index_files/js"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-RQ6CNV1HH2');
+</script>
+</head>
+<body>
+
+
+<div id="gate" style="position: fixed; inset: 0px; background: rgb(14, 14, 15); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 2rem; overflow-y: auto;">
+  <div style="max-width:400px;width:100%;text-align:center">
+
+    <!-- Step 1: Email signup -->
+    <div id="gate-step1">
+      <div style="font-family:&#39;Syne&#39;,sans-serif;font-size:2.2rem;font-weight:700;letter-spacing:-0.03em;margin-bottom:0.5rem">doom<span style="color:#A99EF0">pile</span></div>
+      <div style="font-size:1rem;color:#F0EEE8;margin-bottom:0.5rem;font-weight:500">Clear your doom pile. Finally.</div>
+      <div style="font-size:0.85rem;color:#6B6A66;margin-bottom:2rem;line-height:1.6">Bills. Cleaning. Food. Plans. Body. Focus.<br>Clear your doom pile. Starting with what's stopping you.</div>
+      
+      <div style="background:#161618;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:1.5rem;margin-bottom:1rem;text-align:left">
+        <div style="font-size:0.8rem;color:#9B9A96;margin-bottom:1rem;text-align:center">Enter your email to get instant access</div>
+        
+        <form action="https://promptlypr.us6.list-manage.com/subscribe/post?u=39e1171eb01d9cde1732c28f5&amp;id=c1e934ef66&amp;v_id=1318&amp;f_id=00eaeae1f0" method="post" id="mc-form" target="_blank" onsubmit="handleSignup(event)">
+          <input type="email" name="EMAIL" id="gate-email" placeholder="your@email.com" required="" style="width:100%;background:#0E0E0F;border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#F0EEE8;font-family:Inter,sans-serif;font-size:0.95rem;padding:12px 14px;outline:none;margin-bottom:10px;display:block">
+          <div style="margin-bottom:10px">
+            <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:0.78rem;color:#6B6A66;line-height:1.4">
+              <input type="checkbox" id="gdpr_6998" name="gdpr[6998]" value="Y" required="" style="margin-top:2px;accent-color:#7C6FE0;flex-shrink:0">
+              <span>I agree to receive emails from Doom Pile. You can unsubscribe any time. See our <a href="file:///doompile-privacy.html" target="_blank" style="color:#A99EF0">privacy policy</a>.</span>
+            </label>
+          </div>
+          <div style="position:absolute;left:-5000px" aria-hidden="true">
+            <input type="text" name="b_39e1171eb01d9cde1732c28f5_c1e934ef66" tabindex="-1" value="">
+          </div>
+          <button type="submit" style="width:100%;padding:0.9rem;border-radius:10px;border:none;background:#7C6FE0;color:white;font-family:Syne,sans-serif;font-size:1rem;font-weight:600;cursor:pointer">Get instant access →</button>
+        </form>
+      </div>
+      <div style="font-size:0.75rem;color:#6B6A66;margin-bottom:6px">1 free try per mode · then £4.99 — yours forever for unlimited access</div>
+      <div style="font-size:0.75rem;color:#6B6A66">No spam. Unsubscribe anytime. <a href="file:///doompile-privacy.html" style="color:#A99EF0" target="_blank">Privacy policy</a>.</div>
+      
+      <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.06)">
+        <div style="font-size:0.8rem;color:#6B6A66;margin-bottom:8px">Already have a code?</div>
+        <input type="password" id="gate-input" placeholder="Enter access code" onkeydown="if(event.key===&#39;Enter&#39;)checkGate()" style="width:100%;background:#161618;border:1px solid rgba(255,255,255,0.08);border-radius:10px;color:#F0EEE8;font-family:Inter,sans-serif;font-size:0.95rem;padding:10px 14px;outline:none;margin-bottom:8px;text-align:center;letter-spacing:0.1em">
+        <button onclick="checkGate()" style="width:100%;padding:0.7rem;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#9B9A96;font-family:Inter,sans-serif;font-size:0.9rem;cursor:pointer">Enter code</button>
+        <div id="gate-error" style="color:#F97066;font-size:0.82rem;margin-top:8px;display:none">Wrong code — try again</div>
+      </div>
+    </div>
+
+    <!-- Step 2: Code reveal -->
+    <div id="gate-step2" style="display:none">
+      <div style="font-size:2rem;margin-bottom:1rem">🎉</div>
+      <div style="font-family:&#39;Syne&#39;,sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:0.5rem">You're in!</div>
+      <div style="font-size:0.9rem;color:#9B9A96;margin-bottom:1.5rem">Your access code is:</div>
+      <div style="background:#161618;border:1px solid #7C6FE0;border-radius:12px;padding:1rem 1.5rem;margin-bottom:1.5rem">
+        <div style="font-family:monospace;font-size:1.4rem;color:#A99EF0;letter-spacing:0.12em">freethedoom</div>
+      </div>
+      <div style="font-size:0.82rem;color:#6B6A66;margin-bottom:1.5rem">We've also sent this to your inbox. Don't lose it!</div>
+      <button onclick="useCode()" style="width:100%;padding:1rem;border-radius:12px;border:none;background:#7C6FE0;color:white;font-family:Syne,sans-serif;font-size:1rem;font-weight:600;cursor:pointer">Enter Doom Pile →</button>
+    </div>
+
+  </div>
+</div>
+
+<nav>
+  <div class="nav-logo">doom<span>pile</span></div>
+  <div class="nav-tab active" onclick="showScreen(&#39;home&#39;)" data-screen="home">Home</div>
+  <div class="nav-tab" onclick="showScreen(&#39;bills&#39;)" data-screen="bills"><div class="nav-dot" style="background:#4ADE80"></div>Bills</div>
+  <div class="nav-tab" onclick="showScreen(&#39;clean&#39;)" data-screen="clean"><div class="nav-dot" style="background:#A99EF0"></div>Clean</div>
+  <div class="nav-tab" onclick="showScreen(&#39;eat&#39;)" data-screen="eat"><div class="nav-dot" style="background:#FBB040"></div>Eat</div>
+  <div class="nav-tab" onclick="showScreen(&#39;plans&#39;)" data-screen="plans"><div class="nav-dot" style="background:#60A5FA"></div>Plans</div>
+  <div class="nav-tab" onclick="showScreen(&#39;body&#39;)" data-screen="body"><div class="nav-dot" style="background:#F472B6"></div>Body</div>
+  <div class="nav-tab" onclick="showScreen(&#39;focus&#39;)" data-screen="focus"><div class="nav-dot" style="background:#2DD4BF"></div>Focus</div>
+  <div class="nav-tab" onclick="showScreen(&#39;vent&#39;)" data-screen="vent"><div class="nav-dot" style="background:#ED93B1"></div>Vent</div>
+  <div class="nav-tab" onclick="showScreen(&#39;cook&#39;)" data-screen="cook"><div class="nav-dot" style="background:#F97066"></div>Cook</div>
+  <div class="nav-tab" onclick="showScreen(&#39;sleep&#39;)" data-screen="sleep"><div class="nav-dot" style="background:#7C6FE0"></div>Sleep</div>
+  <a href="https://www.tiktok.com/@doompilesarah" target="_blank" style="margin-left:auto;flex-shrink:0;display:flex;align-items:center;gap:5px;font-size:0.75rem;color:var(--muted2);text-decoration:none;background:var(--bg2);border:1px solid var(--border);border-radius:999px;padding:4px 10px;height:32px">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"></path></svg>
+    @doompilesarah
+  </a>
+</nav>
+
+<main>
+
+<!-- ══ HOME ══ -->
+<div class="screen active" id="screen-home">
+  <div class="home-hero">
+    <h1>Clear your<br><em>doom pile.</em></h1>
+    <p>Starting with what's stopping you.</p>
+  </div>
+  <div class="pile-grid">
+    <div class="pile-btn" onclick="showScreen(&#39;bills&#39;)">
+      <div class="pile-emoji">📄</div>
+      <div class="pile-btn-name">Bills</div>
+      <div class="pile-btn-desc">Find what you're overpaying and switch</div>
+    </div>
+    <div class="pile-btn" onclick="showScreen(&#39;clean&#39;)">
+      <div class="pile-emoji">🧹</div>
+      <div class="pile-btn-name">Clean</div>
+      <div class="pile-btn-desc">One room, one task, right playlist</div>
+    </div>
+    <div class="pile-btn" onclick="showScreen(&#39;eat&#39;)">
+      <div class="pile-emoji">🍜</div>
+      <div class="pile-btn-name">Eat</div>
+      <div class="pile-btn-desc">Stop the scroll. One place to go tonight</div>
+    </div>
+    <div class="pile-btn" onclick="showScreen(&#39;plans&#39;)">
+      <div class="pile-emoji">🎟</div>
+      <div class="pile-btn-name">Plans</div>
+      <div class="pile-btn-desc">Something to do, decided for you</div>
+    </div>
+    <div class="pile-btn" onclick="showScreen(&#39;body&#39;)">
+      <div class="pile-emoji">💊</div>
+      <div class="pile-btn-name">Body</div>
+      <div class="pile-btn-desc">Meds, water, food, sleep — the basics</div>
+    </div>
+    <div class="pile-btn" onclick="showScreen(&#39;focus&#39;)">
+      <div class="pile-emoji">🎧</div>
+      <div class="pile-btn-name">Focus</div>
+      <div class="pile-btn-desc">The right sounds for what you're doing</div>
+    </div>
+    <div class="pile-btn" onclick="showScreen(&#39;cook&#39;)">
+      <div class="pile-emoji">🍳</div>
+      <div class="pile-btn-name">Cook</div>
+      <div class="pile-btn-desc">One recipe, from what you've got</div>
+    </div>
+    <div class="pile-btn" onclick="showScreen(&#39;sleep&#39;)">
+      <div class="pile-emoji">🌙</div>
+      <div class="pile-btn-name">Sleep</div>
+      <div class="pile-btn-desc">Wind down. Brain off. Sleep.</div>
+    </div>
+    <div class="pile-btn" onclick="showScreen(&#39;vent&#39;)">
+      <div class="pile-emoji">💬</div>
+      <div class="pile-btn-name">Vent</div>
+      <div class="pile-btn-desc">Brain dump. Get it out. Feel clearer.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ BILLS ══ -->
+<div class="screen" id="screen-bills">
+  <div class="tag tag-new">Bills mode</div>
+  <div class="screen-title">Your bill pile.</div>
+  <div class="screen-sub">Upload your bills. We find what you're overpaying and walk you through switching — one tiny step at a time.</div>
+
+  <div id="bills-form">
+    <div class="upload-zone" id="upload-zone">
+      <input type="file" id="file-input" accept=".pdf,image/*" multiple="">
+      <div class="upload-icon">📎</div>
+      <h3>Drop your bills here</h3>
+      <p>PDF or photo — energy, mobile, broadband. Up to 5.</p>
+      <div class="file-chips" id="file-chips"></div>
+    </div>
+    <button class="btn-go" id="bills-btn" disabled="" onclick="runBills()">Analyse my bills →</button>
+  </div>
+
+  <div class="loading" id="bills-loading">
+    <div class="loading-ring"></div>
+    <div class="loading-msg" id="bills-msg">Reading your bills...</div>
+  </div>
+
+  <div class="result" id="bills-result"></div>
+</div>
+
+<!-- ══ CLEAN ══ -->
+<div class="screen" id="screen-clean">
+  <div class="tag tag-new" style="background:var(--purple-bg);color:var(--purple-light);border-color:var(--purple)">Clean mode</div>
+  <div class="screen-title">Let's tackle it.</div>
+  <div class="screen-sub">Tell us what you're dealing with. We'll break it into tiny steps and find you the perfect playlist.</div>
+
+  <div id="clean-form">
+    <div class="field">
+      <label>What needs cleaning?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,&#39;clean-room&#39;)">Kitchen</div>
+        <div class="chip" onclick="toggleChip(this,&#39;clean-room&#39;)">Bedroom</div>
+        <div class="chip" onclick="toggleChip(this,&#39;clean-room&#39;)">Bathroom</div>
+        <div class="chip" onclick="toggleChip(this,&#39;clean-room&#39;)">Living room</div>
+        <div class="chip" onclick="toggleChip(this,&#39;clean-room&#39;)">Whole flat</div>
+        <div class="chip" onclick="toggleChip(this,&#39;clean-room&#39;)">Desk</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>How bad is it?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,&#39;clean-level&#39;)">A bit messy</div>
+        <div class="chip" onclick="toggleChip(this,&#39;clean-level&#39;)">Pretty bad</div>
+        <div class="chip" onclick="toggleChip(this,&#39;clean-level&#39;)">Disaster zone</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>How much energy do you have right now?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,&#39;clean-energy&#39;)">Almost none</div>
+        <div class="chip" onclick="toggleChip(this,&#39;clean-energy&#39;)">A little</div>
+        <div class="chip" onclick="toggleChip(this,&#39;clean-energy&#39;)">Actually okay</div>
+      </div>
+    </div>
+    <button class="btn-go" id="clean-btn" onclick="runClean()">Get my cleaning plan →</button>
+  </div>
+
+  <div class="loading" id="clean-loading">
+    <div class="loading-ring"></div>
+    <div class="loading-msg">Building your plan...</div>
+  </div>
+
+  <div class="result" id="clean-result"></div>
+</div>
+
+<!-- ══ EAT ══ -->
+<div class="screen" id="screen-eat">
+  <div class="tag tag-new" style="background:var(--amber-bg);color:var(--amber);border-color:rgba(251,176,64,0.4)">Eat mode</div>
+  <div class="screen-title">Where to eat.</div>
+  <div class="screen-sub">Stop scrolling. Tell us what you feel like and we'll pick one place. Just one.</div>
+
+  <div id="eat-form">
+    <div class="field">
+      <label>Your area or postcode</label>
+      <input type="text" id="eat-location" placeholder="e.g. Croydon, CR0">
+    </div>
+    <div class="field">
+      <label>What are you in the mood for?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,&#39;eat-mood&#39;)">Comfort food</div>
+        <div class="chip" onclick="toggleChip(this,&#39;eat-mood&#39;)">Something light</div>
+        <div class="chip" onclick="toggleChip(this,&#39;eat-mood&#39;)">Treat myself</div>
+        <div class="chip" onclick="toggleChip(this,&#39;eat-mood&#39;)">Quick and easy</div>
+        <div class="chip" onclick="toggleChip(this,&#39;eat-mood&#39;)">Something different</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Budget?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,&#39;eat-budget&#39;)">Cheap as possible</div>
+        <div class="chip" onclick="toggleChip(this,&#39;eat-budget&#39;)">Mid-range</div>
+        <div class="chip" onclick="toggleChip(this,&#39;eat-budget&#39;)">Don't mind</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Eating in or going out?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,&#39;eat-type&#39;)">Going out</div>
+        <div class="chip" onclick="toggleChip(this,&#39;eat-type&#39;)">Delivery</div>
+        <div class="chip" onclick="toggleChip(this,&#39;eat-type&#39;)">Cooking something simple</div>
+      </div>
+    </div>
+    <button class="btn-go" id="eat-btn" onclick="runEat()">Pick somewhere for me →</button>
+  </div>
+
+  <div class="loading" id="eat-loading">
+    <div class="loading-ring"></div>
+    <div class="loading-msg">Finding the perfect spot...</div>
+  </div>
+
+  <div class="result" id="eat-result"></div>
+</div>
+
+<!-- ══ PLANS ══ -->
+<div class="screen" id="screen-plans">
+  <div class="tag tag-new" style="background:var(--blue-bg);color:var(--blue);border-color:rgba(96,165,250,0.4)">Plans mode</div>
+  <div class="screen-title">Something to do.</div>
+  <div class="screen-sub">No more rabbit holes. Tell us about your afternoon and we'll give you one thing to do.</div>
+
+  <div id="plans-form">
+    <div class="field">
+      <label>Where are you?</label>
+      <input type="text" id="plans-location" placeholder="e.g. South London, Brighton">
+    </div>
+    <div class="field">
+      <label>When is this for?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,&#39;plans-when&#39;)">Tonight</div>
+        <div class="chip" onclick="toggleChip(this,&#39;plans-when&#39;)">This weekend</div>
+        <div class="chip" onclick="toggleChip(this,&#39;plans-when&#39;)">Next week</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>What kind of thing?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,&#39;plans-type&#39;)">Get outside</div>
+        <div class="chip" onclick="toggleChip(this,&#39;plans-type&#39;)">Culture or arts</div>
+        <div class="chip" onclick="toggleChip(this,&#39;plans-type&#39;)">Social</div>
+        <div class="chip" onclick="toggleChip(this,&#39;plans-type&#39;)">Low-key indoor</div>
+        <div class="chip" onclick="toggleChip(this,&#39;plans-type&#39;)">Surprise me</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Who's coming?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,&#39;plans-who&#39;)">Just me</div>
+        <div class="chip" onclick="toggleChip(this,&#39;plans-who&#39;)">Partner</div>
+        <div class="chip" onclick="toggleChip(this,&#39;plans-who&#39;)">Friends</div>
+        <div class="chip" onclick="toggleChip(this,&#39;plans-who&#39;)">Kids too</div>
+      </div>
+    </div>
+    <button class="btn-go" id="plans-btn" onclick="runPlans()">Find me something →</button>
+  </div>
+
+  <div class="loading" id="plans-loading">
+    <div class="loading-ring"></div>
+    <div class="loading-msg">Finding something good...</div>
+  </div>
+
+  <div class="result" id="plans-result"></div>
+</div>
+
+<!-- ══ BODY ══ -->
+<div class="screen" id="screen-body">
+  <div class="tag tag-new" style="background:var(--pink-bg);color:var(--pink);border-color:rgba(244,114,182,0.4)">Body mode</div>
+  <div class="screen-title">The basics.</div>
+  <div class="screen-sub">When your brain is full, the basics slip. Let's do a quick check-in.</div>
+
+  <div id="body-form">
+    <div class="field">
+      <label>What time is it roughly?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,&#39;body-time&#39;)">Morning</div>
+        <div class="chip" onclick="toggleChip(this,&#39;body-time&#39;)">Afternoon</div>
+        <div class="chip" onclick="toggleChip(this,&#39;body-time&#39;)">Evening</div>
+        <div class="chip" onclick="toggleChip(this,&#39;body-time&#39;)">Late night</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Tick what you've done today</label>
+      <div class="chip-row">
+        <div class="chip" onclick="this.classList.toggle(&#39;selected&#39;)">Taken meds</div>
+        <div class="chip" onclick="this.classList.toggle(&#39;selected&#39;)">Eaten something</div>
+        <div class="chip" onclick="this.classList.toggle(&#39;selected&#39;)">Drunk water</div>
+        <div class="chip" onclick="this.classList.toggle(&#39;selected&#39;)">Been outside</div>
+        <div class="chip" onclick="this.classList.toggle(&#39;selected&#39;)">Moved my body</div>
+        <div class="chip" onclick="this.classList.toggle(&#39;selected&#39;)">Showered</div>
+        <div class="chip" onclick="this.classList.toggle(&#39;selected&#39;)">Slept okay</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>How are you feeling right now?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,&#39;body-feel&#39;)">Fine actually</div>
+        <div class="chip" onclick="toggleChip(this,&#39;body-feel&#39;)">A bit flat</div>
+        <div class="chip" onclick="toggleChip(this,&#39;body-feel&#39;)">Overwhelmed</div>
+        <div class="chip" onclick="toggleChip(this,&#39;body-feel&#39;)">Exhausted</div>
+        <div class="chip" onclick="toggleChip(this,&#39;body-feel&#39;)">Anxious</div>
+      </div>
+    </div>
+    <button class="btn-go" id="body-btn" onclick="runBody()">Give me a nudge →</button>
+  </div>
+
+  <div class="loading" id="body-loading">
+    <div class="loading-ring"></div>
+    <div class="loading-msg">Thinking about what you need...</div>
+  </div>
+
+  <div class="result" id="body-result"></div>
+</div>
+
+<!-- ══ FOCUS ══ -->
+<div class="screen" id="screen-focus">
+  <div class="tag tag-new" style="background:var(--teal-bg);color:var(--teal);border-color:rgba(45,212,191,0.4)">Focus mode</div>
+  <div class="screen-title">Get in the zone.</div>
+  <div class="screen-sub">Tell us what you're trying to do and we'll find the right sounds to make it happen.</div>
+
+  <div id="focus-form">
+    <div class="field">
+      <label>What are you trying to do?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,&#39;focus-task&#39;)">Cleaning</div>
+        <div class="chip" onclick="toggleChip(this,&#39;focus-task&#39;)">Deep work / study</div>
+        <div class="chip" onclick="toggleChip(this,&#39;focus-task&#39;)">Admin / emails</div>
+        <div class="chip" onclick="toggleChip(this,&#39;focus-task&#39;)">Creative work</div>
+        <div class="chip" onclick="toggleChip(this,&#39;focus-task&#39;)">Exercise</div>
+        <div class="chip" onclick="toggleChip(this,&#39;focus-task&#39;)">Wind down</div>
+        <div class="chip" onclick="toggleChip(this,&#39;focus-task&#39;)">Fall asleep</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>What's your brain like right now?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,&#39;focus-brain&#39;)">Scattered, needs anchoring</div>
+        <div class="chip" onclick="toggleChip(this,&#39;focus-brain&#39;)">Low energy, needs a boost</div>
+        <div class="chip" onclick="toggleChip(this,&#39;focus-brain&#39;)">Anxious, needs calming</div>
+        <div class="chip" onclick="toggleChip(this,&#39;focus-brain&#39;)">Actually okay</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Do you want lyrics?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,&#39;focus-lyrics&#39;)">No lyrics please</div>
+        <div class="chip" onclick="toggleChip(this,&#39;focus-lyrics&#39;)">Lyrics are fine</div>
+        <div class="chip" onclick="toggleChip(this,&#39;focus-lyrics&#39;)">Foreign language okay</div>
+      </div>
+    </div>
+    <button class="btn-go" id="focus-btn" onclick="runFocus()">Find my sound →</button>
+  </div>
+
+  <div class="loading" id="focus-loading">
+    <div class="loading-ring"></div>
+    <div class="loading-msg">Finding your sound...</div>
+  </div>
+
+  <div class="result" id="focus-result"></div>
+</div>
+
+
+<!-- ══ VENT ══ -->
+<div class="screen" id="screen-vent">
+  <div class="tag tag-new" style="background:rgba(244,114,182,0.12);color:#F472B6;border-color:rgba(244,114,182,0.4)">Vent mode</div>
+  <div class="screen-title">Get it out.</div>
+  <div class="screen-sub">Brain dump everything that's in your head. We'll help you make sense of it — no judgement, no fixing, just clarity.</div>
+
+  <div id="vent-form">
+    <div class="field">
+      <label>What's going on? Just write it all out.</label>
+      <textarea id="vent-input" placeholder="Just write. Don&#39;t edit. It doesn&#39;t need to make sense..." style="height:140px"></textarea>
+    </div>
+    <div class="field">
+      <label>What do you actually need right now?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,&#39;vent-need&#39;)">Just to feel heard</div>
+        <div class="chip" onclick="toggleChip(this,&#39;vent-need&#39;)">Help making sense of it</div>
+        <div class="chip" onclick="toggleChip(this,&#39;vent-need&#39;)">To know what to do next</div>
+        <div class="chip" onclick="toggleChip(this,&#39;vent-need&#39;)">All of the above</div>
+      </div>
+    </div>
+    <button class="btn-go" id="vent-btn" onclick="runVent()">I'm done writing →</button>
+  </div>
+
+  <div class="loading" id="vent-loading">
+    <div class="loading-ring"></div>
+    <div class="loading-msg">Reading what you wrote...</div>
+  </div>
+
+  <div class="result" id="vent-result"></div>
+</div>
+
+<!-- ══ COOK ══ -->
+<div class="screen" id="screen-cook">
+  <div class="tag tag-new" style="background:rgba(249,112,102,0.12);color:#F97066;border-color:rgba(249,112,102,0.4)">Cook mode</div>
+  <div class="screen-title">What's for dinner.</div>
+  <div class="screen-sub">Stop staring at the fridge. Tell us what you've got or what you fancy and we'll give you one recipe. Just one.</div>
+
+  <div id="cook-form">
+    <div class="field">
+      <label>How do you want to start?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,&#39;cook-mode&#39;)">Use what I have</div>
+        <div class="chip" onclick="toggleChip(this,&#39;cook-mode&#39;)">Build around an ingredient</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>What have you got / what do you fancy?</label>
+      <textarea id="cook-input" placeholder="e.g. chicken, pasta, tinned tomatoes, onion... or just &#39;halloumi&#39;"></textarea>
+    </div>
+    <div class="field">
+      <label>How much time and energy do you have?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,&#39;cook-time&#39;)">15 mins, very low energy</div>
+        <div class="chip" onclick="toggleChip(this,&#39;cook-time&#39;)">30 mins, a little energy</div>
+        <div class="chip" onclick="toggleChip(this,&#39;cook-time&#39;)">Up to an hour, feeling okay</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Any dietary needs?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="this.classList.toggle(&#39;selected&#39;)">Vegetarian</div>
+        <div class="chip" onclick="this.classList.toggle(&#39;selected&#39;)">Vegan</div>
+        <div class="chip" onclick="this.classList.toggle(&#39;selected&#39;)">Gluten free</div>
+        <div class="chip" onclick="this.classList.toggle(&#39;selected&#39;)">Dairy free</div>
+        <div class="chip" onclick="this.classList.toggle(&#39;selected&#39;)">No restrictions</div>
+      </div>
+    </div>
+    <button class="btn-go" id="cook-btn" onclick="runCook()">Give me a recipe →</button>
+  </div>
+
+  <div class="loading" id="cook-loading">
+    <div class="loading-ring"></div>
+    <div class="loading-msg">Finding the perfect recipe...</div>
+  </div>
+
+  <div class="result" id="cook-result"></div>
+</div>
+
+<!-- ══ SLEEP ══ -->
+<div class="screen" id="screen-sleep">
+  <div class="tag tag-new" style="background:rgba(124,111,224,0.12);color:#A99EF0;border-color:rgba(124,111,224,0.4)">Sleep mode</div>
+  <div class="screen-title">Time to switch off.</div>
+  <div class="screen-sub">Tell us what's going on in your head and we'll build you a wind-down routine that actually works for your brain.</div>
+
+  <div id="sleep-form">
+    <div class="field">
+      <label>What time do you need to wake up?</label>
+      <input type="time" id="sleep-wake" style="width:auto">
+    </div>
+    <div class="field">
+      <label>What's your brain doing right now?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,&#39;sleep-brain&#39;)">Racing thoughts</div>
+        <div class="chip" onclick="toggleChip(this,&#39;sleep-brain&#39;)">Anxious or restless</div>
+        <div class="chip" onclick="toggleChip(this,&#39;sleep-brain&#39;)">Wired but tired</div>
+        <div class="chip" onclick="toggleChip(this,&#39;sleep-brain&#39;)">Just can't switch off</div>
+        <div class="chip" onclick="toggleChip(this,&#39;sleep-brain&#39;)">Actually okay</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>What have you done in the last hour?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="this.classList.toggle(&#39;selected&#39;)">Been on my phone</div>
+        <div class="chip" onclick="this.classList.toggle(&#39;selected&#39;)">Watched TV</div>
+        <div class="chip" onclick="this.classList.toggle(&#39;selected&#39;)">Had caffeine</div>
+        <div class="chip" onclick="this.classList.toggle(&#39;selected&#39;)">Eaten a big meal</div>
+        <div class="chip" onclick="this.classList.toggle(&#39;selected&#39;)">Been stressed</div>
+        <div class="chip" onclick="this.classList.toggle(&#39;selected&#39;)">Exercise</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>How's sleep been lately?</label>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this,&#39;sleep-history&#39;)">Fine usually</div>
+        <div class="chip" onclick="toggleChip(this,&#39;sleep-history&#39;)">Hit and miss</div>
+        <div class="chip" onclick="toggleChip(this,&#39;sleep-history&#39;)">Pretty bad lately</div>
+      </div>
+    </div>
+    <button class="btn-go" id="sleep-btn" onclick="runSleep()">Build my wind-down →</button>
+  </div>
+
+  <div class="loading" id="sleep-loading">
+    <div class="loading-ring"></div>
+    <div class="loading-msg">Building your wind-down routine...</div>
+  </div>
+
+  <div class="result" id="sleep-result"></div>
+</div>
+
+<!-- ══ BLOG SECTION ══ -->
+<div class="blog-section">
+  <div class="blog-section-header">
+    <div class="blog-section-title">From the blog</div>
+    <a href="file:///doompile-blog.html" class="blog-see-all">See all →</a>
+  </div>
+
+  <a href="file:///doompile-what-is.html" class="blog-card">
+    <div class="blog-card-tag">Understanding doom piles</div>
+    <div class="blog-card-title">What is a Doom Pile?</div>
+    <div class="blog-card-desc">The pile of things you can't face — and the neuroscience behind why it happens.</div>
+  </a>
+
+  <a href="file:///doompile-how-to-fix.html" class="blog-card">
+    <div class="blog-card-tag">Practical guide</div>
+    <div class="blog-card-title">How to Fix a Doom Pile When Everything Feels Too Much</div>
+    <div class="blog-card-desc">Not a motivation problem. A friction problem. Here's what actually works.</div>
+  </a>
+
+  <a href="file:///doompile-why-piles.html" class="blog-card">
+    <div class="blog-card-tag">Psychology</div>
+    <div class="blog-card-title">Why You Create Doom Piles (and Can't Start Sorting Them)</div>
+    <div class="blog-card-desc">The shame spiral, the neuroscience, and why productivity advice makes it worse.</div>
+  </a>
+</div>
+</main>
+
+<script>
+const WORKER = 'https://doom-sorted.sarah-14c.workers.dev/';
+const files = [];
+
+// ── NAV ──
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  const activeTab = document.querySelector('.nav-tab[data-screen="' + name + '"]');
+  if(activeTab) activeTab.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ── CHIPS ──
+function toggleChip(el, group) {
+  document.querySelectorAll(`[onclick*="${group}"]`).forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function getChip(group) {
+  const el = document.querySelector(`[onclick*="${group}"].selected`);
+  return el ? el.textContent : '';
+}
+function getChecked() {
+  return [...document.querySelectorAll('#screen-body .chip.selected')].map(c => c.textContent).join(', ');
+}
+
+// ── FILES ──
+const uploadZone = document.getElementById('upload-zone');
+const fileInput = document.getElementById('file-input');
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag'));
+uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('drag'); [...e.dataTransfer.files].forEach(addFile); });
+fileInput.addEventListener('change', () => { [...fileInput.files].forEach(addFile); fileInput.value=''; });
+function addFile(f) {
+  if(files.length >= 5 || files.find(x => x.name === f.name)) return;
+  files.push(f);
+  renderChips();
+  document.getElementById('bills-btn').disabled = files.length === 0;
+}
+function removeFile(name) {
+  const i = files.findIndex(f => f.name === name);
+  if(i>-1) files.splice(i,1);
+  renderChips();
+  document.getElementById('bills-btn').disabled = files.length === 0;
+}
+function renderChips() {
+  document.getElementById('file-chips').innerHTML = files.map(f =>
+    `<div class="file-chip">${f.name.slice(0,20)} <button onclick="removeFile('${f.name}')">×</button></div>`
+  ).join('');
+}
+function fileToB64(f) {
+  return new Promise((res,rej) => { const r = new FileReader(); r.onload = () => res(r.result.split(',')[1]); r.onerror = rej; r.readAsDataURL(f); });
+}
+
+// ── API CALL ──
+async function callAI(messages, system) {
+  const res = await fetch(WORKER, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1500, system, messages })
+  });
+  const data = await res.json();
+  if(!res.ok) throw new Error(data.error?.message || 'Error');
+  return data.content.map(c => c.text||'').join('');
+}
+
+function showLoading(id) {
+  document.getElementById(id+'-loading').classList.add('active');
+  document.getElementById(id+'-form').style.display = 'none';
+}
+function hideLoading(id) {
+  document.getElementById(id+'-loading').classList.remove('active');
+}
+function showResult(id, html) {
+  const el = document.getElementById(id+'-result');
+  el.innerHTML = html;
+  el.classList.add('active');
+}
+
+// ── BILLS ──
+async function runBills() {
+  showLoading('bills');
+  const msgs = [{ role: 'user', content: [] }];
+  for(const f of files) {
+    const b64 = await fileToB64(f);
+    const mime = f.type || 'application/pdf';
+    if(mime === 'application/pdf') msgs[0].content.push({ type:'document', source:{ type:'base64', media_type:'application/pdf', data:b64 }});
+    else msgs[0].content.push({ type:'image', source:{ type:'base64', media_type:mime, data:b64 }});
+  }
+  msgs[0].content.push({ type:'text', text:`Analyse these UK household bills. Return ONLY valid JSON:
+{
+  "savingLow": number (realistic one-off saving in £, typically 10-50 for most households — DO NOT exaggerate), "savingHigh": number (must be within 20% of savingLow, never more than £100/month unless bills are truly extreme),
+  "bills": [{ "provider": string, "type": string, "amount": number, "verdict": "good|warn|bad", "verdictText": string, "facts": [{"k":string,"v":string}] }],
+  "steps": [{ "id": string, "title": string, "time": string, "desc": string, "type": "pac|link|call|info", "data": string, "providers": [{"name":string,"price":number,"saving":number}] }],
+  "summary": string
+}
+Max 4 steps. Be specific, warm, UK-focused. For mobile: pac type, data="65075". Keep verdictText to one sentence.` });
+
+  try {
+    const raw = await callAI(msgs, '');
+    const json = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    hideLoading('bills');
+    renderBills(json);
+  } catch(e) {
+    hideLoading('bills');
+    document.getElementById('bills-form').style.display = 'block';
+    alert('Something went wrong: ' + e.message);
+  }
+}
+
+let billsData = null;
+let doneSteps = new Set();
+
+function renderBills(d) {
+  billsData = d;
+  const billCards = d.bills.map(b => `
+    <div class="result-card" style="margin-bottom:10px">
+      <div class="result-label">${b.provider} · ${b.type} · £${b.amount}/mo</div>
+      ${b.facts.map(f => `<div style="display:flex;justify-content:space-between;font-size:0.82rem;padding:4px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted2)">${f.k}</span><span>${f.v}</span></div>`).join('')}
+      <div style="margin-top:10px;font-size:0.82rem;padding:8px 10px;border-radius:8px;background:${b.verdict==='good'?'var(--green-bg)':b.verdict==='bad'?'var(--coral-bg)':'var(--amber-bg)'};color:${b.verdict==='good'?'var(--green)':b.verdict==='bad'?'var(--coral)':'var(--amber)'}">${b.verdictText}</div>
+    </div>`).join('');
+
+  const stepItems = d.steps.map((s,i) => `
+    <li class="step-item" id="step-${s.id}" onclick="expandStep('${s.id}')">
+      <div class="step-num" id="stepnum-${s.id}">${i+1}</div>
+      <div>
+        <div class="step-title">${s.title}</div>
+        <div class="step-desc">${s.time} · ${s.desc}</div>
+        <div id="stepaction-${s.id}" style="margin-top:10px;display:none">${renderStepAction(s)}</div>
+      </div>
+    </li>`).join('');
+
+  showResult('bills', `
+    <div class="result-card highlight" style="margin-bottom:16px">
+      <div class="saving-big">£${d.savingLow}–£${d.savingHigh}</div>
+      <div class="saving-sub">estimated one-off saving · ${d.summary}</div>
+    </div>
+    ${billCards}
+    <div style="margin-top:1.5rem">
+      <div style="font-size:0.85rem;font-weight:500;margin-bottom:1rem;color:var(--muted2)">YOUR ACTION PLAN</div>
+      <ul class="step-list">${stepItems}</ul>
+    </div>
+    <button class="reset-btn" onclick="resetBills()">↩ Start over</button>
+  `);
+}
+
+function expandStep(id) {
+  const action = document.getElementById('stepaction-'+id);
+  const isOpen = action.style.display !== 'none';
+  document.querySelectorAll('[id^=stepaction-]').forEach(a => a.style.display='none');
+  if(!isOpen) action.style.display = 'block';
+}
+
+function renderStepAction(s) {
+  let html = '';
+  if(s.type === 'pac') {
+    html += `<div class="sms-box"><div class="sms-label">Tap to send this text</div><div class="sms-msg">To: ${s.data} · "PAC"</div><a class="action-pill purple" href="sms:${s.data}?body=PAC">Send text now</a></div>`;
+    if(s.providers?.length) {
+      html += `<div style="margin-top:10px;font-size:0.8rem;color:var(--muted2);margin-bottom:8px">Pick your new provider first:</div>`;
+      html += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">` + s.providers.map(p => `
+        <div style="border:1px solid var(--border);border-radius:8px;padding:8px;cursor:pointer;font-size:0.78rem;background:var(--bg3)" onclick="this.style.borderColor='var(--purple)'">
+          <div style="font-weight:500">${p.name}</div>
+          <div style="color:var(--green)">£${p.price}/mo</div>
+          <div style="color:var(--muted)">save £${p.saving}</div>
+        </div>`).join('') + `</div>`;
+    }
+  } else if(s.type === 'link') {
+    const safeUrl = s.data && s.data.startsWith('http') ? s.data : 'https://www.google.com/search?q=' + encodeURIComponent(s.title);
+    html += `<a class="action-pill purple" href="${safeUrl}" target="_blank">${s.title} →</a>`;
+  } else if(s.type === 'call') {
+    html += `<a class="action-pill purple" href="tel:${s.data}">Call now</a>`;
+  }
+  html += `<button class="action-pill green" style="margin-top:8px" onclick="markDone('${s.id}',event)">✓ Done</button>`;
+  return html;
+}
+
+function markDone(id, e) {
+  e.stopPropagation();
+  doneSteps.add(id);
+  const item = document.getElementById('step-'+id);
+  item.classList.add('done');
+  document.getElementById('stepnum-'+id).textContent = '✓';
+  document.getElementById('stepaction-'+id).style.display = 'none';
+  if(billsData && doneSteps.size === billsData.steps.length) {
+    document.getElementById('bills-result').insertAdjacentHTML('beforeend','<div class="done-banner"><h3>You did it.</h3><p>Savings start next billing cycle.</p></div>');
+  }
+}
+
+function resetBills() {
+  files.length = 0;
+  renderChips();
+  document.getElementById('bills-btn').disabled = true;
+  document.getElementById('bills-result').classList.remove('active');
+  document.getElementById('bills-form').style.display = 'block';
+  doneSteps.clear();
+}
+
+// ── CLEAN ──
+async function runClean() {
+  if(!checkFreemium("clean")) return;
+  addUse("clean");
+  const room = getChip('clean-room');
+  const level = getChip('clean-level');
+  const energy = getChip('clean-energy');
+  if(!room || !level || !energy) { alert('Just pick one from each row and you\'re good to go.'); return; }
+  showLoading('clean');
+  try {
+    const raw = await callAI([{ role:'user', content:`I need to clean: ${room}. How bad: ${level}. My energy: ${energy}. Give me a cleaning plan.` }],
+      `You are a warm, practical cleaning coach for people with executive dysfunction and ADHD. Return ONLY valid JSON:
+{"intro": string (one encouraging sentence, warm and specific), "steps": [{"task": string (very specific, max 8 words), "time": string (e.g. "5 mins"), "tip": string (one practical tip)}], "playlistMood": string (describe the vibe in 3 words), "playlists": [{"vibe": string, "name": string, "url": string (real Spotify playlist URL)}]}
+Max 6 steps. Make each step tiny and achievable. Playlists should be real Spotify URLs that match the cleaning vibe.`);
+    const d = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    hideLoading('clean');
+    const steps = d.steps.map((s,i) => `
+      <li class="step-item" onclick="this.classList.toggle('done')">
+        <div class="step-num">${i+1}</div>
+        <div><div class="step-title">${s.task}</div><div class="step-desc">${s.time} · ${s.tip}</div></div>
+      </li>`).join('');
+    const playlists = (d.playlists||[]).map(p => `
+      <a class="playlist-card" href="${p.url}" target="_blank">
+        <div class="playlist-vibe">${p.vibe}</div>
+        <div class="playlist-name">${p.name}</div>
+      </a>`).join('');
+    showResult('clean', `
+      <div class="result-card highlight">${d.intro}</div>
+      <div style="margin:1rem 0 0.5rem;font-size:0.8rem;color:var(--muted2);text-transform:uppercase;letter-spacing:0.06em">Your steps — tap each when done</div>
+      <ul class="step-list">${steps}</ul>
+      ${playlists ? `<div style="margin-top:1.5rem"><div style="font-size:0.8rem;color:var(--muted2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em">Playlists for this</div><div class="playlist-grid">${playlists}</div></div>` : ''}
+      <button class="reset-btn" onclick="resetMode('clean')">↩ Start over</button>`);
+  } catch(e) { hideLoading('clean'); document.getElementById('clean-form').style.display='block'; alert('Something went wrong: '+e.message); }
+}
+
+// ── EAT ──
+async function runEat() {
+  if(!checkFreemium("eat")) return;
+  addUse("eat");
+  const loc = document.getElementById('eat-location').value.trim();
+  const mood = getChip('eat-mood');
+  const budget = getChip('eat-budget');
+  const type = getChip('eat-type');
+  if(!loc) { alert('Just pop in your area or postcode.'); return; }
+  showLoading('eat');
+  try {
+    const raw = await callAI([{ role:'user', content:`Location: ${loc}. Mood: ${mood||'anything'}. Budget: ${budget||'any'}. Type: ${type||'going out'}.` }],
+      `You are a decisive friend who picks ONE perfect place to eat — no endless options, just one great choice. Return ONLY valid JSON:
+{"name": string, "type": string (e.g. "Thai street food"), "area": string, "priceRange": string (e.g. "£12-18 per head"), "why": string (one sentence, specific and warm — why THIS place for THIS person right now), "bookingTip": string (e.g. "Just walk in — it's usually fine on weeknights" or "Book on OpenTable"), "bookingUrl": string (ALWAYS use this format: https://www.google.com/maps/search/?api=1&query=RESTAURANT+NAME+AREA replacing spaces with + signs. Never invent a direct restaurant URL.), "backupIdea": string (one sentence backup if the first doesn't work out)}`);
+    const d = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    hideLoading('eat');
+    showResult('eat', `
+      <div class="venue-card">
+        <div class="venue-name">${d.name}</div>
+        <div class="venue-meta">${d.type} · ${d.area} · ${d.priceRange}</div>
+        <div class="venue-why">"${d.why}"</div>
+        <div style="font-size:0.82rem;color:var(--muted2);margin-bottom:12px">${d.bookingTip}</div>
+        <a class="action-pill purple" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(d.name + ' ' + d.area)}" target="_blank">Find on Google Maps →</a>
+      <a class="action-pill green" href="https://www.google.com/search?q=${encodeURIComponent(d.name + ' ' + d.area + ' menu book table')}" target="_blank">Search online →</a>
+      </div>
+      <div class="result-card"><div class="result-label">If that doesn't work</div><div class="result-text">${d.backupIdea}</div></div>
+      <button class="reset-btn" onclick="resetMode('eat')">↩ Try again</button>`);
+  } catch(e) { hideLoading('eat'); document.getElementById('eat-form').style.display='block'; alert('Something went wrong: '+e.message); }
+}
+
+// ── PLANS ──
+async function runPlans() {
+  if(!checkFreemium("plans")) return;
+  addUse("plans");
+  const loc = document.getElementById('plans-location').value.trim();
+  const when = getChip('plans-when');
+  const type = getChip('plans-type');
+  const who = getChip('plans-who');
+  if(!loc) { alert('Just tell us roughly where you are.'); return; }
+  showLoading('plans');
+  try {
+    const raw = await callAI([{ role:'user', content:`Location: ${loc}. When: ${when||'this weekend'}. Type: ${type||'anything'}. Who: ${who||'just me'}.` }],
+      `You are a decisive friend who picks ONE great thing to do — specific, real, achievable. Return ONLY valid JSON:
+{"title": string, "category": string, "when": string (specific time suggestion), "why": string (one warm sentence — why this is perfect for them), "howToGetThere": string (one sentence), "whatToExpect": string (one sentence, sensory/practical details), "cost": string (approximate), "link": string (ALWAYS use this format: https://www.google.com/search?q=EVENT+NAME+LOCATION replacing spaces with + signs. Never invent a direct event URL.), "backupIdea": string (one sentence alternative)}`);
+    const d = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    hideLoading('plans');
+    showResult('plans', `
+      <div class="event-card">
+        <div class="event-name">${d.title}</div>
+        <div class="event-meta">${d.category} · ${d.when} · ${d.cost}</div>
+        <div class="event-why">"${d.why}"</div>
+        <div style="font-size:0.82rem;color:var(--muted2);margin-bottom:4px">${d.howToGetThere}</div>
+        <div style="font-size:0.82rem;color:var(--muted2);margin-bottom:12px">${d.whatToExpect}</div>
+        <a class="action-pill purple" href="https://www.google.com/search?q=${encodeURIComponent(d.title + ' ' + d.when)}" target="_blank">Search for this →</a>
+      <a class="action-pill green" href="https://www.eventbrite.co.uk/d/united-kingdom/${encodeURIComponent(d.title)}" target="_blank">Check Eventbrite →</a>
+      </div>
+      <div class="result-card"><div class="result-label">If that's not right</div><div class="result-text">${d.backupIdea}</div></div>
+      <button class="reset-btn" onclick="resetMode('plans')">↩ Try again</button>`);
+  } catch(e) { hideLoading('plans'); document.getElementById('plans-form').style.display='block'; alert('Something went wrong: '+e.message); }
+}
+
+// ── BODY ──
+async function runBody() {
+  if(!checkFreemium("body")) return;
+  addUse("body");
+  const time = getChip('body-time');
+  const feel = getChip('body-feel');
+  const done = getChecked();
+  if(!time || !feel) { alert('Just tell us what time it is and how you\'re feeling.'); return; }
+  showLoading('body');
+  try {
+    const raw = await callAI([{ role:'user', content:`Time of day: ${time}. Feeling: ${feel}. Done today: ${done||'not much yet'}.` }],
+      `You are a warm, non-judgemental friend checking in on someone with ADHD or executive dysfunction. Never shame. Always validate. Return ONLY valid JSON:
+{"checkin": string (warm 2-sentence acknowledgement of how they're doing), "priority": string (the ONE most important thing they should do in the next 10 minutes — specific and tiny), "priorityWhy": string (one sentence explaining why this one thing), "gentleNudges": [{"task": string (tiny, specific), "reason": string (one sentence, warm)}], "affirmation": string (genuine, specific, not cheesy)}
+Max 3 gentle nudges. Be specific to the time of day and how they're feeling.`);
+    const d = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    hideLoading('body');
+    const nudges = d.gentleNudges.map(n => `
+      <li class="step-item" onclick="this.classList.toggle('done')">
+        <div class="step-num">·</div>
+        <div><div class="step-title">${n.task}</div><div class="step-desc">${n.reason}</div></div>
+      </li>`).join('');
+    showResult('body', `
+      <div class="check-in-card">
+        <div style="font-size:0.95rem;line-height:1.7;margin-bottom:1rem">${d.checkin}</div>
+        <div style="font-size:0.8rem;color:var(--pink);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Do this first</div>
+        <div style="font-size:1rem;font-weight:500;margin-bottom:4px">${d.priority}</div>
+        <div style="font-size:0.82rem;color:var(--muted2)">${d.priorityWhy}</div>
+      </div>
+      <ul class="step-list">${nudges}</ul>
+      <div class="result-card" style="margin-top:1rem;border-color:var(--pink);background:var(--pink-bg)">
+        <div style="font-size:0.85rem;color:var(--pink);font-style:italic">${d.affirmation}</div>
+      </div>
+      <button class="reset-btn" onclick="resetMode('body')">↩ Check in again</button>`);
+  } catch(e) { hideLoading('body'); document.getElementById('body-form').style.display='block'; alert('Something went wrong: '+e.message); }
+}
+
+// ── FOCUS ──
+async function runFocus() {
+  if(!checkFreemium("focus")) return;
+  addUse("focus");
+  const task = getChip('focus-task');
+  const brain = getChip('focus-brain');
+  const lyrics = getChip('focus-lyrics');
+  if(!task || !brain) { alert('Just tell us what you\'re doing and how your brain is.'); return; }
+  showLoading('focus');
+  try {
+    const raw = await callAI([{ role:'user', content:`Task: ${task}. Brain state: ${brain}. Lyrics preference: ${lyrics||'no preference'}.` }],
+      `You are an expert in sound, focus, and neurodivergent brains. Return ONLY valid JSON:
+{"explanation": string (2 sentences — why this type of sound works for this brain state and task), "playlists": [{"vibe": string (3 words), "name": string (descriptive playlist name e.g. "Deep focus instrumentals"), "why": string (one sentence), "spotifySearch": string (search term to use on Spotify e.g. "lo fi focus beats"), "youtubeSearch": string (search term for YouTube e.g. "brown noise focus 1 hour"), "bpm": string (e.g. "~90 BPM — steady, not distracting")}], "tips": [string (one short practical tip about using music to focus)}]}
+Provide 3 playlists. Use real Spotify playlist URLs. Be specific about why each one works neurologically.`);
+    const d = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    hideLoading('focus');
+    const playlists = d.playlists.map(p => `
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+          <div>
+            <div style="font-size:0.72rem;color:var(--teal);font-weight:500;margin-bottom:3px">${p.vibe}</div>
+            <div style="font-size:0.95rem;font-weight:500">${p.name}</div>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <a class="action-pill purple" href="https://open.spotify.com/search/${encodeURIComponent(p.spotifySearch)}" target="_blank" style="margin:0;font-size:0.75rem;padding:5px 12px">Search Spotify</a>
+          <a class="action-pill purple" href="https://music.apple.com/search?term=${encodeURIComponent(p.spotifySearch)}" target="_blank" style="margin:0;font-size:0.75rem;padding:5px 12px;background:#fc3c44">Apple Music</a>
+          <a class="action-pill purple" href="https://www.youtube.com/results?search_query=${encodeURIComponent(p.youtubeSearch)}" target="_blank" style="margin:0;font-size:0.75rem;padding:5px 12px;background:#cc0000">YouTube</a>
+        </div>
+        </div>
+        <div style="font-size:0.8rem;color:var(--muted2);margin-bottom:4px">${p.why}</div>
+        <div style="font-size:0.75rem;color:var(--muted)">${p.bpm}</div>
+      </div>`).join('');
+    const tips = (d.tips||[]).map(t => `<li style="font-size:0.82rem;color:var(--muted2);padding:4px 0;border-bottom:1px solid var(--border)">${t}</li>`).join('');
+    showResult('focus', `
+      <div style="background:var(--teal-bg);border:1px solid rgba(45,212,191,0.3);border-radius:14px;padding:1.25rem;margin-bottom:1.25rem">
+        <div style="font-size:0.9rem;line-height:1.7;color:var(--text)">${d.explanation}</div>
+      </div>
+      ${playlists}
+      ${tips ? `<div style="margin-top:1rem"><div style="font-size:0.8rem;color:var(--muted2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em">Focus tips</div><ul style="list-style:none">${tips}</ul></div>` : ''}
+      <button class="reset-btn" onclick="resetMode('focus')">↩ Try different options</button>`);
+  } catch(e) { hideLoading('focus'); document.getElementById('focus-form').style.display='block'; alert('Something went wrong: '+e.message); }
+}
+
+
+
+// ── VENT ──
+async function runVent() {
+  const text = document.getElementById('vent-input').value.trim();
+  const need = getChip('vent-need');
+  if(!text) { alert('Just write anything — it doesn\'t need to make sense.'); return; }
+  if(!checkFreemium('vent')) return;
+  addUse('vent');
+  showLoading('vent');
+  try {
+    const raw = await callAI([{ role:'user', content:`What they wrote: ${text}. What they need: ${need||'just to feel heard'}.` }],
+      `You are a warm, non-judgemental friend who is really good at listening and helping people make sense of what's going on in their head. You specialise in supporting neurodivergent people. Never diagnose. Never dismiss. Never give unsolicited advice unless they ask for next steps. Return ONLY valid JSON:
+{"heard": string (2-3 sentences that genuinely reflect back what they said — show you actually read it, be specific, warm, validating. This is NOT a summary, it's a human response), "themes": [string] (2-4 key themes or feelings you noticed — single words or short phrases), "reframe": string (one gentle reframe or observation — not toxic positivity, just a different angle. Optional and soft.), "nextSteps": [string] (only if they asked for next steps — 2-3 tiny, specific, achievable actions. Skip this if they just wanted to feel heard), "affirmation": string (one genuine, specific sentence that validates their experience without being cheesy)}`);
+    const d = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    hideLoading('vent');
+    const themes = d.themes?.map(t => `<span style="background:rgba(244,114,182,0.15);color:#F472B6;border:1px solid rgba(244,114,182,0.3);border-radius:999px;padding:3px 12px;font-size:0.78rem">${t}</span>`).join(' ') || '';
+    const steps = d.nextSteps?.length ? `
+      <div class="result-card" style="margin-top:10px">
+        <div class="result-label">What you could do next</div>
+        ${d.nextSteps.map(s => `<div style="font-size:0.85rem;padding:5px 0;border-bottom:1px solid var(--border);color:var(--text)">${s}</div>`).join('')}
+      </div>` : '';
+    showResult('vent', `
+      <div class="result-card" style="border-color:#F472B6;background:rgba(244,114,182,0.08);margin-bottom:12px">
+        <div style="font-size:0.92rem;line-height:1.75;color:var(--text)">${d.heard}</div>
+      </div>
+      ${themes ? `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">${themes}</div>` : ''}
+      ${d.reframe ? `<div class="result-card" style="margin-bottom:10px"><div class="result-label">Another way to look at it</div><div style="font-size:0.88rem;color:var(--text);line-height:1.65;font-style:italic">${d.reframe}</div></div>` : ''}
+      ${steps}
+      <div class="result-card" style="margin-top:10px;border-color:#F472B6;background:rgba(244,114,182,0.08)">
+        <div style="font-size:0.88rem;color:#F472B6;font-style:italic">${d.affirmation}</div>
+      </div>
+      <button class="reset-btn" onclick="resetMode('vent')">↩ Write something else</button>`);
+  } catch(e) { hideLoading('vent'); document.getElementById('vent-form').style.display='block'; alert('Something went wrong: '+e.message); }
+}
+
+// ── COOK ──
+async function runCook() {
+  const mode = getChip('cook-mode');
+  const input = document.getElementById('cook-input').value.trim();
+  const time = getChip('cook-time');
+  const dietary = [...document.querySelectorAll('#screen-cook .chip.selected')].map(c => c.textContent).join(', ');
+  if(!input) { alert('Just tell us what you have or what you fancy.'); return; }
+  if(!checkFreemium('cook')) return;
+  addUse('cook');
+  showLoading('cook');
+  try {
+    const raw = await callAI([{ role:'user', content:`Mode: ${mode||'use what I have'}. Ingredients/ingredient: ${input}. Time and energy: ${time||'30 mins'}. Dietary: ${dietary||'none'}.` }],
+      `You are a practical, warm home cook helping someone with executive dysfunction decide what to make for dinner. Give them ONE recipe only — never a choice. Return ONLY valid JSON:
+{"recipeName": string, "servings": string, "totalTime": string, "energyLevel": string (e.g. "Low effort"), "intro": string (one warm encouraging sentence — be honest if its a simple meal, thats fine), "youllNeed": [string] (ONLY list things they genuinely do NOT have based on what they told you. If they have everything, return an empty array. Do not list basic pantry staples like salt, pepper, oil unless they specifically said they dont have them), "steps": [{"step": number, "instruction": string (one clear action, max 15 words), "time": string (e.g. "2 mins")}], "tip": string (one practical tip), "swaps": string (one sentence about easy ingredient swaps — be creative with what they have)}
+Max 8 steps. Each step must be tiny and specific. No fancy techniques. Assume basic kitchen equipment only. IMPORTANT: Every recipe MUST include protein, carbs AND vegetables — a nutritionally balanced meal. If they dont have all three, suggest the minimum they need to buy to make it balanced. Never give a recipe with just protein and no carbs or veg. Do not pretend salt, pepper or oil are missing ingredients.`);
+    const d = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    hideLoading('cook');
+    const steps = d.steps.map(s => `
+      <li class="step-item" onclick="this.classList.toggle('done')">
+        <div class="step-num">${s.step}</div>
+        <div><div class="step-title">${s.instruction}</div><div class="step-desc">${s.time}</div></div>
+      </li>`).join('');
+    const shopping = d.youllNeed?.length ? `
+      <div class="result-card" style="margin-bottom:10px">
+        <div class="result-label">You might need to grab</div>
+        ${d.youllNeed.map(i => `<div style="font-size:0.85rem;padding:4px 0;border-bottom:1px solid var(--border);color:var(--text)">${i}</div>`).join('')}
+        <a class="action-pill green" href="https://www.google.com/search?q=${encodeURIComponent(d.youllNeed.join(', ') + ' buy online UK')}" target="_blank" style="margin-top:10px">Find ingredients online →</a>
+      </div>` : '';
+    showResult('cook', `
+      <div class="result-card highlight" style="margin-bottom:12px">
+        <div style="font-size:1.3rem;font-weight:500;font-family:Syne,sans-serif;margin-bottom:4px">${d.recipeName}</div>
+        <div style="font-size:0.82rem;color:var(--muted2)">${d.servings} · ${d.totalTime} · ${d.energyLevel}</div>
+        <div style="font-size:0.9rem;margin-top:8px;color:var(--text)">${d.intro}</div>
+      </div>
+      ${shopping}
+      <div style="font-size:0.85rem;font-weight:500;color:var(--muted2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em">Steps — tap each when done</div>
+      <ul class="step-list">${steps}</ul>
+      ${d.tip ? `<div class="result-card" style="margin-top:1rem"><div class="result-label">Tip</div><div class="result-text">${d.tip}</div></div>` : ''}
+      ${d.swaps ? `<div class="result-card" style="margin-top:8px"><div class="result-label">Easy swaps</div><div class="result-text">${d.swaps}</div></div>` : ''}
+      <button class="reset-btn" onclick="resetMode('cook')">↩ Try a different recipe</button>`);
+  } catch(e) { hideLoading('cook'); document.getElementById('cook-form').style.display='block'; alert('Something went wrong: '+e.message); }
+}
+
+// ── SLEEP ──
+async function runSleep() {
+  const wake = document.getElementById('sleep-wake').value;
+  const brain = getChip('sleep-brain');
+  const history = getChip('sleep-history');
+  const lastHour = [...document.querySelectorAll('#screen-sleep .chip.selected')].map(c => c.textContent).join(', ');
+  if(!brain) { alert('Just tell us what your brain is doing right now.'); return; }
+  if(!checkFreemium('sleep')) return;
+  addUse('sleep');
+  showLoading('sleep');
+  try {
+    const raw = await callAI([{ role:'user', content:`Wake up time: ${wake||'not set'}. Brain state: ${brain}. Last hour: ${lastHour||'nothing specific'}. Sleep history: ${history||'okay'}.` }],
+      `You are a warm, knowledgeable sleep coach who specialises in neurodivergent brains — ADHD, autism, anxiety. Never shame. Always practical. Return ONLY valid JSON:
+{"assessment": string (2 sentences — warm acknowledgement of their brain state, specific and validating), "bedtime": string (recommended bedtime based on wake time e.g. "10:45pm"), "routine": [{"time": string (e.g. "9:30pm"), "action": string (specific, calming action, max 12 words), "why": string (one sentence — the science behind it, simple language)}], "avoid": [string (one thing to avoid and why, keep short)], "soundRecommendation": string (specific type of sound e.g. "pink noise" or "delta wave binaural beats"), "youtubeSearch": string (YouTube search term for sleep sounds e.g. "pink noise sleep 8 hours"), "morningNote": string (one kind sentence about tomorrow)}
+IMPORTANT: All routine steps must have times BEFORE the bedtime. The final step should be getting into bed. Never recommend putting the phone down and then give steps that require the phone. Steps must be in chronological order and all finish by bedtime. Max 5 routine steps. Max 3 avoid items. Be specific to their brain state.`);
+    const d = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    hideLoading('sleep');
+    const routine = d.routine.map((r,i) => `
+      <li class="step-item" onclick="this.classList.toggle('done')">
+        <div class="step-num" style="font-size:0.7rem;width:auto;padding:0 8px;border-radius:999px">${r.time}</div>
+        <div><div class="step-title">${r.action}</div><div class="step-desc">${r.why}</div></div>
+      </li>`).join('');
+    const avoid = d.avoid?.map(a => `<div style="font-size:0.82rem;padding:5px 0;border-bottom:1px solid var(--border);color:var(--muted2)">${a}</div>`).join('') || '';
+    showResult('sleep', `
+      <div class="result-card" style="border-color:#7C6FE0;background:var(--purple-bg);margin-bottom:12px">
+        <div style="font-size:0.9rem;line-height:1.7">${d.assessment}</div>
+        ${d.bedtime ? `<div style="margin-top:10px;font-size:1.1rem;font-weight:500;font-family:Syne,sans-serif">Aim to be in bed by ${d.bedtime}</div>` : ''}
+      </div>
+      <div style="font-size:0.85rem;font-weight:500;color:var(--muted2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em">Your wind-down — tap each when done</div>
+      <ul class="step-list">${routine}</ul>
+      ${avoid ? `<div class="result-card" style="margin-top:1rem"><div class="result-label">Avoid tonight</div>${avoid}</div>` : ''}
+      <div class="result-card" style="margin-top:10px">
+        <div class="result-label">Sleep sounds</div>
+        <div style="font-size:0.85rem;color:var(--text);margin-bottom:10px">${d.soundRecommendation}</div>
+        <a class="action-pill purple" href="https://www.youtube.com/results?search_query=${encodeURIComponent(d.youtubeSearch)}" target="_blank">Find on YouTube →</a>
+      </div>
+      ${d.morningNote ? `<div class="result-card" style="margin-top:8px;border-color:#7C6FE0"><div class="result-label">Tomorrow</div><div style="font-size:0.85rem;color:var(--text);font-style:italic">${d.morningNote}</div></div>` : ''}
+      <button class="reset-btn" onclick="resetMode('sleep')">↩ Start over</button>`);
+  } catch(e) { hideLoading('sleep'); document.getElementById('sleep-form').style.display='block'; alert('Something went wrong: '+e.message); }
+}
+
+// ── RESET ──
+function resetMode(mode) {
+  document.getElementById(mode+'-result').classList.remove('active');
+  document.getElementById(mode+'-form').style.display = 'block';
+  document.querySelectorAll(`#screen-${mode} .chip`).forEach(c => c.classList.remove('selected'));
+}
+</script>
+
+<script>
+// ── GATE ──
+const BETA_PASS = 'freethedoom';
+  const PRO_PASS = 'unlockthedoom';
+const STRIPE_URL = 'https://buy.stripe.com/9B600l7HZ9xqcEE77JcQU0e';
+const FREE_MODES = [];
+const PAID_MODES = ['bills','clean','eat','plans','body','focus','cook','sleep','vent'];
+
+function handleSignup(e) {
+  e.preventDefault();
+  const email = document.getElementById('gate-email').value;
+  if(!email) return;
+  
+  // Submit to Mailchimp in background
+  const form = document.getElementById('mc-form');
+  fetch(form.action, {
+    method: 'POST',
+    mode: 'no-cors',
+    body: new FormData(form)
+  }).catch(() => {});
+  
+  // Show the code
+  document.getElementById('gate-step1').style.display = 'none';
+  document.getElementById('gate-step2').style.display = 'block';
+}
+
+function useCode() {
+  document.getElementById('gate').style.display = 'none';
+  localStorage.setItem('dp_auth', '1');
+}
+
+function checkGate() {
+  const val = document.getElementById('gate-input').value.trim();
+  if(val === PRO_PASS) {
+    document.getElementById('gate').style.display = 'none';
+    localStorage.setItem('dp_auth', '1');
+    localStorage.setItem('dp_paid', '1');
+  } else if(val === BETA_PASS) {
+    document.getElementById('gate').style.display = 'none';
+    localStorage.setItem('dp_auth', '1');
+  } else {
+    document.getElementById('gate-error').style.display = 'block';
+    document.getElementById('gate-input').value = '';
+  }
+}
+
+function initGate() {
+  if(localStorage.getItem('dp_auth') === '1') {
+    document.getElementById('gate').style.display = 'none';
+  }
+}
+
+// ── FREEMIUM ──
+function getUses(mode) {
+  return parseInt(localStorage.getItem('dp_uses_' + mode) || '0');
+}
+function addUse(mode) {
+  localStorage.setItem('dp_uses_' + mode, getUses(mode) + 1);
+}
+function isPaid() {
+  return localStorage.getItem('dp_paid') === '1';
+}
+
+function checkFreemium(mode) {
+  if(FREE_MODES.includes(mode)) return true;
+  if(isPaid()) return true;
+  if(getUses(mode) < 1) return true;
+  showPaywall(mode);
+  return false;
+}
+
+function showPaywall(mode) {
+  const names = {bills:'Bills',clean:'Clean',eat:'Eat',plans:'Plans',body:'Body',focus:'Focus',cook:'Cook',sleep:'Sleep',vent:'Vent'};
+  const el = document.getElementById(mode + '-result');
+  el.innerHTML = `
+    <div style="background:#1E1E21;border:1px solid #7C6FE0;border-radius:16px;padding:2rem;text-align:center">
+      <div style="font-family:Syne,sans-serif;font-size:1.4rem;font-weight:700;margin-bottom:0.5rem">You've used your free ${names[mode]} session</div>
+      <div style="font-size:0.9rem;color:#9B9A96;margin-bottom:1.5rem;line-height:1.6">Unlock all 5 modes — Clean, Eat, Plans, Body and Focus — for £4.99 — yours forever. Bills always free.</div>
+      <a href="${STRIPE_URL}" target="_blank" style="display:inline-block;background:#7C6FE0;color:white;padding:0.9rem 2rem;border-radius:999px;font-family:Syne,sans-serif;font-weight:600;font-size:0.95rem;text-decoration:none;margin-bottom:1rem">Unlock Doom Pile — £4.99 forever — £4.99/mo</a>
+      <div style="font-size:0.75rem;color:#6B6A66">Already paid? <span style="color:#A99EF0;cursor:pointer" onclick="markPaid()">Click here</span></div>
+    </div>`;
+  el.classList.add('active');
+  document.getElementById(mode + '-form').style.display = 'none';
+}
+
+function markPaid() {
+  const code = prompt('Enter your pro access code:');
+  if(code && code.trim() === PRO_PASS) {
+    localStorage.setItem('dp_paid', '1');
+    location.reload();
+  } else {
+    alert('That code doesn\'t look right — check your email from Doom Pile.');
+  }
+}
+
+window.addEventListener('load', initGate);
+</script>
+
+<footer style="text-align:center;padding:2rem 1rem;border-top:1px solid rgba(255,255,255,0.08);font-size:0.78rem;color:#6B6A66;margin-top:2rem">
+  © 2026 SJK Labs ·
+  <a href="file:///doompile-blog.html" style="color:#6B6A66;text-decoration:none;margin:0 0.5rem">Blog</a>
+  <a href="file:///doompile-about.html" style="color:#6B6A66;text-decoration:none;margin:0 0.5rem">About</a>
+  <a href="file:///doompile-privacy.html" style="color:#6B6A66;text-decoration:none;margin:0 0.5rem">Privacy</a>
+  <a href="file:///doompile-terms.html" style="color:#6B6A66;text-decoration:none;margin:0 0.5rem">Terms</a>
+  <a href="file:///cdn-cgi/l/email-protection#325a575e5e5d72565d5d5f425b5e571c515d1c4759" style="color:#6B6A66;text-decoration:none;margin:0 0.5rem"></a></footer></body></html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why You Create Doom Piles (and Can't Start Sorting Them) | Doom Pile</title>
+<meta name="description" content="The psychology behind why doom piles happen — and why willpower, to-do lists and productivity advice don't fix them.">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0E0E0F;
+  --bg2: #161618;
+  --border: rgba(255,255,255,0.08);
+  --text: #F0EEE8;
+  --muted: #6B6A66;
+  --muted2: #9B9A96;
+  --purple: #7C6FE0;
+  --purple-light: #A99EF0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-weight: 300; line-height: 1.75; }
+nav {
+  padding: 0 2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px;
+  background: rgba(14,14,15,0.95);
+  position: sticky; top: 0; z-index: 100;
+}
+.logo { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; text-decoration: none; color: var(--text); }
+.logo span { color: var(--purple-light); }
+.nav-links { display: flex; gap: 1.5rem; }
+.nav-links a { font-size: 0.85rem; color: var(--muted2); text-decoration: none; }
+.nav-links a:hover { color: var(--text); }
+main { max-width: 680px; margin: 0 auto; padding: 4rem 1.5rem 6rem; }
+h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 5vw, 2.6rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1.5rem; }
+h1 em { color: var(--purple-light); font-style: normal; }
+h2 { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; margin: 2.5rem 0 1rem; }
+h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--purple-light); }
+p { font-size: 0.95rem; color: var(--muted2); line-height: 1.8; margin-bottom: 1rem; }
+p strong { color: var(--text); font-weight: 500; }
+.intro { font-size: 1.05rem; color: var(--text); line-height: 1.8; margin-bottom: 2rem; }
+.quote {
+  border-left: 3px solid var(--purple);
+  padding: 1rem 1.5rem;
+  margin: 2rem 0;
+  font-size: 1rem;
+  color: var(--text);
+  line-height: 1.6;
+  font-style: italic;
+}
+.highlight-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+.highlight-box h3 { margin: 0 0 0.5rem; color: var(--text); }
+.highlight-box p { margin: 0; font-size: 0.9rem; }
+.cta-box {
+  background: linear-gradient(135deg, rgba(124,111,224,0.15), rgba(124,111,224,0.05));
+  border: 1px solid rgba(124,111,224,0.3);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  margin: 2.5rem 0;
+}
+.cta-box h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text); }
+.cta-box p { font-size: 0.9rem; color: var(--muted2); margin-bottom: 1.5rem; }
+.btn {
+  display: inline-block;
+  background: var(--purple);
+  color: white;
+  padding: 0.85rem 2rem;
+  border-radius: 999px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+.related { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+.related h3 { color: var(--muted2); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem; }
+.related-links { display: flex; flex-direction: column; gap: 0.75rem; }
+.related-links a { color: var(--purple-light); text-decoration: none; font-size: 0.9rem; }
+footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--muted); }
+footer a { color: var(--muted); text-decoration: none; margin: 0 0.5rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">doom<span>pile</span></a>
+  <div class="nav-links">
+    <a href="/">App</a>
+    <a href="/doompile-about.html">About</a>
+    <a href="/doompile-privacy.html">Privacy</a>
+    <a href="https://www.tiktok.com/@doompilesarah" target="_blank" style="display:flex;align-items:center;gap:6px;font-size:0.8rem;color:var(--muted2);text-decoration:none;background:var(--bg2);border:1px solid var(--border);border-radius:999px;padding:5px 12px;transition:border-color 0.15s" onmouseover="this.style.borderColor='#7C6FE0'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg>
+    @doompilesarah
+  </a>
+  </div>
+</nav>
+
+<main>
+  <h1>Why You Create Doom Piles <em>(and Can't Start Sorting Them)</em></h1>
+
+  <p class="intro">You're not disorganised. You're not lazy. You're not "bad at adulting." The reason you create doom piles — and the reason you can't seem to clear them — is rooted in how your brain actually works. And once you understand it, the pile stops being a source of shame and starts being something you can actually do something about.</p>
+
+  <h2>The pile isn't the problem</h2>
+  <p>The pile is a symptom. What's actually happening is a problem with task initiation — the brain's ability to start a task even when you know exactly what needs doing and genuinely want to do it.</p>
+  <p>This is one of the core features of executive dysfunction, which affects people with <strong>ADHD, autism, anxiety, depression, chronic fatigue, and burnout</strong>. It's not a personality trait. It's a neurological pattern — and it shows up differently in different people, but the doom pile is one of its most recognisable signatures.</p>
+
+  <div class="quote">
+    "I've known for six months that I need to sort my bills. I think about it almost every day. And every day I don't do it. It's not that I don't care — it's that something stops me every time I try to start."
+  </div>
+
+  <h2>The neuroscience of avoidance</h2>
+
+  <h3>The brain treats uncertain tasks as threats</h3>
+  <p>When a task feels uncertain — you don't know how long it will take, what you'll find, or whether you'll be able to handle it — the brain's threat-detection system activates. This system evolved to protect us from physical danger. But it can't tell the difference between a tiger and an unopened envelope from HMRC.</p>
+  <p>The result is that the brain treats the task as something to be avoided, not approached. The avoidance feels rational in the moment — and the pile grows.</p>
+
+  <h3>Dopamine and the ADHD brain</h3>
+  <p>For people with ADHD, the brain's dopamine system works differently. Dopamine is the neurotransmitter responsible for motivation, reward, and — crucially — task initiation. When dopamine signalling is disrupted, the brain struggles to generate the internal motivation needed to start tasks that aren't immediately rewarding.</p>
+  <p>This is why people with ADHD can spend hours hyperfocused on something they love, and then be completely unable to send a two-sentence email. It's not about difficulty — it's about dopamine.</p>
+
+  <h3>The shame spiral</h3>
+  <p>Here's the cruel part: the longer the pile sits, the more shame it accumulates. And shame is one of the most powerful inhibitors of action. Every time you look at the pile and don't deal with it, you feel worse about yourself — which makes starting even harder. The pile becomes emotionally loaded in a way that has nothing to do with the actual tasks inside it.</p>
+
+  <div class="highlight-box">
+    <h3>The doom pile shame spiral</h3>
+    <p>Task feels overwhelming → avoidance feels safer → pile grows → shame increases → task feels more overwhelming → avoidance feels even safer → pile grows more. Breaking the spiral requires breaking it at the first step — making the task feel less overwhelming, not trying to overcome the shame directly.</p>
+  </div>
+
+  <h2>Why productivity advice makes it worse</h2>
+  <p>Most productivity systems were designed by and for neurotypical brains. They assume that if you have a good enough system — the right app, the right habit, the right morning routine — you'll be able to start. For people with executive dysfunction, this assumption is wrong.</p>
+
+  <h3>"Just break it into smaller tasks"</h3>
+  <p>This advice assumes the problem is scale. Usually it isn't. A smaller task is still a task that requires initiation. If the initiation mechanism is broken, a smaller task is just a smaller version of the same problem.</p>
+
+  <h3>"Set a timer for five minutes"</h3>
+  <p>This can work — but only once you've already started. The five-minute timer doesn't help with the moment before starting, which is where the actual paralysis lives.</p>
+
+  <h3>"Make a to-do list"</h3>
+  <p>People with executive dysfunction often have excellent to-do lists and still can't start anything on them. The list isn't the problem. The gap between the list and the action is the problem.</p>
+
+  <h2>What actually works</h2>
+  <p>What closes the gap between knowing and doing isn't more planning or more willpower. It's <strong>removing friction at the exact moment of paralysis.</strong></p>
+  <p>This means having something that tells you the single next action — not a list of options, not a system to follow, just the one specific thing to do right now. It means having the right conditions in place — the right environment, sounds, and energy level. And it means removing every unnecessary decision from the process.</p>
+  <p>The brain that creates doom piles doesn't need more structure. It needs less friction.</p>
+
+  <div class="cta-box">
+    <h3>Built for the brain that creates doom piles.</h3>
+    <p>Doom Pile removes the friction that stops you starting. Bills, cleaning, food, decisions, sleep, focus — each mode does one thing: removes the bit that makes you freeze. First try of every mode is free.</p>
+    <a href="/" class="btn">Try it now — it's free to start →</a>
+  </div>
+
+  <h2>You're not broken</h2>
+  <p>The most important thing to understand about doom piles is that having one — or several, or a whole house full of them — does not mean you are failing at life. It means your brain works in a way that the standard systems weren't designed for.</p>
+  <p>The pile is information, not evidence. It tells you something about how your brain works. And once you understand that, you can stop trying to fix yourself and start building the conditions that actually work for you.</p>
+
+  <div class="related">
+    <h3>Related reading</h3>
+    <div class="related-links">
+      <a href="/doompile-what-is.html">What is a doom pile? →</a>
+      <a href="/doompile-how-to-fix.html">How to fix a doom pile when you feel overwhelmed →</a>
+      <a href="/doompile-about.html">About Doom Pile — built by someone who lives this →</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  © 2026 SJK Labs ·
+  <a href="/">App</a>
+  <a href="/doompile-about.html">About</a>
+  <a href="/doompile-privacy.html">Privacy</a>
+  <a href="/doompile-terms.html">Terms</a>
+  <a href="/cdn-cgi/l/email-protection#5b333e3737341b3f3434362b32373e753834752e30"><span cla
