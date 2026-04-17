@@ -81,6 +81,42 @@ main { max-width: 720px; margin: 0 auto; padding: 4rem 1.5rem 6rem; }
 footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--muted); }
 footer a { color: var(--muted); text-decoration: none; margin: 0 0.5rem; }
 footer a:hover { color: var(--text); }
+@media (max-width: 720px) {
+  nav {
+    height: auto;
+    padding: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+  }
+  .nav-links {
+    flex-wrap: wrap;
+    gap: 0.85rem;
+  }
+  main {
+    padding: 2rem 1rem 4rem;
+  }
+}
+@media (max-width: 560px) {
+  .nav-links a {
+    font-size: 0.92rem;
+  }
+  .profile {
+    gap: 1rem;
+  }
+  .profile img {
+    width: 108px;
+    height: 108px;
+  }
+  .quote,
+  .cta-box {
+    padding: 1.2rem;
+  }
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
 </style>
 </head>
 <body>
@@ -127,7 +163,7 @@ footer a:hover { color: var(--text); }
 
   <div class="section">
     <h2>Who I am</h2>
-    <p>I've spent twenty years in marketing and communications — including heading up comms at PageGroup, a FTSE 250 company. I'm a trained journalist whose work has appeared in the Times, Bloomberg, Financial Times, Nikkei and Dazed & Confused, and who has interviewed everyone from <strong>Blur to Tim Minchin</strong>.</p>
+    <p>I have spent twenty years in marketing and communications, including leading communications at PageGroup, a FTSE 250 company, and Moove, a VC and Uber-backed mobility unicorn. I trained as a journalist and have spent years interviewing people across music, culture, food and business — including Blur, Tim Minchin and Adrian Chiles. My work as both a PR professional and journalist has appeared across UK national titles and internationally in Bloomberg, Nikkei and Dazed &amp; Confused. My podcast reached the Apple Music top 10.</p>
     <p>I'm a <strong>Level 2 qualified fitness instructor and certified spin instructor</strong> — which is why movement is baked into the future of this product in a way no other app is doing.</p>
     <p>I host <strong>PRception</strong>, a new podcast exploring how attention becomes authority across markets, culture and real life. My previous podcast <strong>Demo Tapes</strong> hit the Apple Music top 10.</p>
     <p>I founded a day club in Brighton. I did a standup comedy course and performed it. I did a singing course and performed that too. I was once a semi-finalist on <strong>Britain's Best Dish</strong>, which confirmed that following recipes is not really my thing.</p>
@@ -139,6 +175,7 @@ footer a:hover { color: var(--text); }
     <p>Right now it helps with nine things — bills, cleaning, eating, plans, body basics, focus sounds, cooking, sleep and venting. Each one removes a specific bit of friction.</p>
     <p>But this is just the beginning. Movement is coming — proper, qualified, neurodivergent-aware movement programming built around controlled articulated rotation. Not "do some stretches." Something designed for bodies that process the world differently.</p>
     <p>Doom Pile is being built by someone who lives it. That's the only way to build something that actually works.</p>
+    <p>Doom Pile also connects into <a href="https://notbuiltforthis.co" target="_blank" rel="noreferrer" style="color:var(--purple-light);text-decoration:none">Not Built For This</a>, the media house that links into the product and gives it a wider editorial home.</p>
   </div>
 
   <div class="cta-box">
