@@ -100,6 +100,19 @@ main { max-width: 720px; margin: 0 auto; padding: 2.35rem 1.5rem 6rem; }
 
 /* ── HOME ── */
 .home-hero { text-align: center; padding: 2rem 1rem 1rem; }
+.home-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(124,111,224,0.28);
+  background: rgba(124,111,224,0.12);
+  color: var(--purple-light);
+  font-size: 0.84rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
 .home-hero h1 {
   font-family: 'Syne', sans-serif;
   font-size: clamp(2.2rem, 6vw, 3.5rem);
@@ -110,6 +123,46 @@ main { max-width: 720px; margin: 0 auto; padding: 2.35rem 1.5rem 6rem; }
 }
 .home-hero h1 em { color: var(--purple-light); font-style: normal; }
 .home-hero p { color: var(--muted2); font-size: 1rem; max-width: 380px; margin: 0 auto 2.5rem; line-height: 1.7; }
+.hero-proof {
+  max-width: 560px;
+  margin: 0 auto 2rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(30,30,33,0.92), rgba(22,22,24,0.92));
+}
+.hero-proof strong {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+}
+.hero-proof p {
+  max-width: none;
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--muted2);
+}
+.hero-pricing {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+.hero-pill {
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  font-size: 0.92rem;
+  color: var(--muted2);
+}
+.hero-pill strong {
+  color: var(--text);
+  font-weight: 600;
+}
 .pile-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 @media(min-width:500px){ .pile-grid { grid-template-columns: repeat(3, 1fr); } }
 .pile-btn {
@@ -480,8 +533,8 @@ main { max-width: 720px; margin: 0 auto; padding: 2.35rem 1.5rem 6rem; }
     <!-- Step 1: Email signup -->
     <div id="gate-step1">
       <div style="font-family:&#39;Syne&#39;,sans-serif;font-size:2.2rem;font-weight:700;letter-spacing:-0.03em;margin-bottom:0.5rem">doom<span style="color:#A99EF0">pile</span></div>
-      <div style="font-size:1rem;color:#F0EEE8;margin-bottom:0.5rem;font-weight:500">Clear your doom pile. Finally.</div>
-      <div style="font-size:0.98rem;color:#6B6A66;margin-bottom:2rem;line-height:1.7">Bills. Cleaning. Food. Plans. Body. Focus.<br>Clear your doom pile. Starting with what's stopping you.</div>
+      <div style="font-size:1rem;color:#F0EEE8;margin-bottom:0.6rem;font-weight:600">AI help for the piles you keep avoiding.</div>
+      <div style="font-size:0.98rem;color:#6B6A66;margin-bottom:2rem;line-height:1.7">Bills. Cleaning. Food. Plans. Body. Focus.<br>Pick the pile you are stuck on and get one clear next step.</div>
       
       <div style="background:#161618;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:1.5rem;margin-bottom:1rem;text-align:left">
         <div style="font-size:0.95rem;color:#9B9A96;margin-bottom:1rem;text-align:center">Enter your email to get instant access</div>
@@ -500,7 +553,8 @@ main { max-width: 720px; margin: 0 auto; padding: 2.35rem 1.5rem 6rem; }
           <button type="submit" style="width:100%;padding:1rem 1.1rem;border-radius:10px;border:none;background:#7C6FE0;color:white;font-family:Syne,sans-serif;font-size:1.08rem;font-weight:600;cursor:pointer">Get instant access →</button>
         </form>
       </div>
-      <div style="font-size:0.9rem;color:#6B6A66;margin-bottom:8px;line-height:1.5">1 free try per pile. Then unlock every pile for £9.99 a year.</div>
+      <div style="font-size:0.92rem;color:#6B6A66;margin-bottom:8px;line-height:1.6">1 free try in every pile. Then unlock full access for £9.99 a year.</div>
+      <div style="font-size:0.9rem;color:#A99EF0;margin-bottom:8px;line-height:1.5">Early supporter pricing.</div>
       <div style="font-size:0.88rem;color:#6B6A66;line-height:1.5">No spam. Unsubscribe anytime. <a href="/doompile-privacy.html" style="color:#A99EF0" target="_blank">Privacy policy</a>.</div>
       
       <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.06)">
@@ -549,8 +603,17 @@ main { max-width: 720px; margin: 0 auto; padding: 2.35rem 1.5rem 6rem; }
 <!-- ══ HOME ══ -->
 <div class="screen active" id="screen-home">
   <div class="home-hero">
-    <h1>Clear your<br><em>doom pile.</em></h1>
-    <p>Starting with what's stopping you.</p>
+    <div class="home-kicker">For the life admin you cannot face</div>
+    <h1>AI help for the piles<br><em>you keep avoiding.</em></h1>
+    <p>Doom Pile turns overwhelm into one clear next step across bills, food, body admin, plans, cleaning, focus, sleep and more.</p>
+    <div class="hero-proof">
+      <strong>You are not lazy. You are overloaded.</strong>
+      <p>Built for the moments when a task is small on paper but weirdly impossible in real life.</p>
+    </div>
+    <div class="hero-pricing">
+      <div class="hero-pill"><strong>Free:</strong> one try in every pile</div>
+      <div class="hero-pill"><strong>Full access:</strong> £9.99/year early supporter price</div>
+    </div>
   </div>
   <div class="pile-grid">
     <div class="pile-btn" onclick="showScreen(&#39;bills&#39;)">
@@ -1616,7 +1679,7 @@ function showPaywall(mode) {
   el.innerHTML = `
     <div style="background:#1E1E21;border:1px solid #7C6FE0;border-radius:16px;padding:2rem;text-align:center">
       <div style="font-family:Syne,sans-serif;font-size:1.6rem;font-weight:700;margin-bottom:0.6rem">You've used your free ${names[mode]} session</div>
-      <div style="font-size:1rem;color:#9B9A96;margin-bottom:1.5rem;line-height:1.7">Unlock every pile for £9.99 a year and keep Doom Pile on hand whenever you need it.</div>
+      <div style="font-size:1rem;color:#9B9A96;margin-bottom:1.5rem;line-height:1.7">Unlock every pile for £9.99 a year. This is the early supporter price.</div>
       <div style="display:flex;flex-direction:column;gap:12px">
         <a href="${FULL_STRIPE_URL}" target="_blank" style="display:inline-block;background:#7C6FE0;color:white;padding:1rem 1.4rem;border-radius:999px;font-family:Syne,sans-serif;font-weight:700;font-size:1.04rem;text-decoration:none">Unlock every pile — £9.99/year</a>
       </div>
@@ -1645,4 +1708,4 @@ window.addEventListener('load', initGate);
   <a href="/doompile-about.html" style="color:#6B6A66;text-decoration:none;margin:0 0.5rem">About</a>
   <a href="/doompile-privacy.html" style="color:#6B6A66;text-decoration:none;margin:0 0.5rem">Privacy</a>
   <a href="/doompile-terms.html" style="color:#6B6A66;text-decoration:none;margin:0 0.5rem">Terms</a>
-  <a href="/cdn-cgi/l/email-protection#325a575e5e5d72565d5d5f425b5e571c515d1c4759" style="color:#6B6A66;text-decoration:none;margin:0 0.5rem"></a></footer></body></html>
+  <a href="mailto:hello@doompile.co.uk" style="color:#6B6A66;text-decoration:none;margin:0 0.5rem">Email</a></footer></body></html>
