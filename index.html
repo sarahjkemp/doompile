@@ -704,8 +704,8 @@ main { max-width: none; margin: 0 auto; padding: 2.35rem 1.5rem 6rem; }
     <!-- Step 1: Email signup -->
     <div id="gate-step1">
       <div style="font-family:&#39;Syne&#39;,sans-serif;font-size:2.2rem;font-weight:700;letter-spacing:-0.03em;margin-bottom:0.5rem">doom<span style="color:#A99EF0">pile</span></div>
-      <div style="font-size:1rem;color:#F0EEE8;margin-bottom:0.6rem;font-weight:600">AI help for the piles you keep avoiding.</div>
-      <div style="font-size:0.98rem;color:#6B6A66;margin-bottom:2rem;line-height:1.7">Bills. Cleaning. Food. Plans. Body. Focus.<br>Pick the pile you are stuck on and get one clear next step.</div>
+      <div style="font-size:1rem;color:#F0EEE8;margin-bottom:0.6rem;font-weight:600">Help for the piles you keep avoiding.</div>
+      <div style="font-size:0.98rem;color:#6B6A66;margin-bottom:2rem;line-height:1.7">Bills. Cleaning. Body. Focus. Sleep.<br>Pick the pile you are stuck on and get one clear next step.</div>
       
       <div style="background:#161618;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:1.5rem;margin-bottom:1rem;text-align:left">
         <div style="font-size:0.95rem;color:#9B9A96;margin-bottom:1rem;text-align:center">Enter your email to get instant access</div>
@@ -756,8 +756,6 @@ main { max-width: none; margin: 0 auto; padding: 2.35rem 1.5rem 6rem; }
   <div class="nav-tab active" onclick="showScreen(&#39;home&#39;)" data-screen="home">Home</div>
   <div class="nav-tab" onclick="showScreen(&#39;bills&#39;)" data-screen="bills"><div class="nav-dot" style="background:#4ADE80"></div>Bills</div>
   <div class="nav-tab" onclick="showScreen(&#39;clean&#39;)" data-screen="clean"><div class="nav-dot" style="background:#A99EF0"></div>Clean</div>
-  <div class="nav-tab" onclick="showScreen(&#39;eat&#39;)" data-screen="eat"><div class="nav-dot" style="background:#FBB040"></div>Eat</div>
-  <div class="nav-tab" onclick="showScreen(&#39;plans&#39;)" data-screen="plans"><div class="nav-dot" style="background:#60A5FA"></div>Plans</div>
   <div class="nav-tab" onclick="showScreen(&#39;body&#39;)" data-screen="body"><div class="nav-dot" style="background:#F472B6"></div>Body</div>
   <div class="nav-tab" onclick="showScreen(&#39;focus&#39;)" data-screen="focus"><div class="nav-dot" style="background:#2DD4BF"></div>Focus</div>
   <div class="nav-tab" onclick="showScreen(&#39;vent&#39;)" data-screen="vent"><div class="nav-dot" style="background:#ED93B1"></div>Vent</div>
@@ -777,7 +775,7 @@ main { max-width: none; margin: 0 auto; padding: 2.35rem 1.5rem 6rem; }
     <div class="hero-main">
       <div class="home-kicker">For the life admin you cannot face</div>
       <h1>Help for the piles<br><em>you keep avoiding.</em></h1>
-      <p class="hero-copy">Doom Pile turns overwhelm into one clear next step across bills, food, body admin, plans, cleaning, focus, sleep and more.</p>
+      <p class="hero-copy">Doom Pile turns overwhelm into one clear next step across bills, body admin, cleaning, focus, sleep and more.</p>
     </div>
     <div class="hero-side">
       <div class="hero-proof">
@@ -809,16 +807,6 @@ main { max-width: none; margin: 0 auto; padding: 2.35rem 1.5rem 6rem; }
       <div class="pile-emoji">🧹</div>
       <div class="pile-btn-name">Clean</div>
       <div class="pile-btn-desc">One room, one task, right playlist</div>
-    </div>
-    <div class="pile-btn" onclick="showScreen(&#39;eat&#39;)">
-      <div class="pile-emoji">🍜</div>
-      <div class="pile-btn-name">Eat</div>
-      <div class="pile-btn-desc">Stop the scroll. One place to go tonight</div>
-    </div>
-    <div class="pile-btn" onclick="showScreen(&#39;plans&#39;)">
-      <div class="pile-emoji">🎟</div>
-      <div class="pile-btn-name">Plans</div>
-      <div class="pile-btn-desc">Something to do, decided for you</div>
     </div>
     <div class="pile-btn" onclick="showScreen(&#39;body&#39;)">
       <div class="pile-emoji">💊</div>
@@ -1776,7 +1764,7 @@ const FULL_PASS = 'UNLOCKTHEDOOM';
 const LEGACY_FULL_PASS = 'unlockthedoom';
 const FULL_STRIPE_URL = 'https://buy.stripe.com/5kQfZj7HZgZSawwbnZcQU0g';
 const FREE_MODES = [];
-const FULL_MODES = ['bills','clean','eat','plans','body','focus','cook','sleep','vent'];
+const FULL_MODES = ['bills','clean','body','focus','cook','sleep','vent'];
 
 function handleSignup(e) {
   e.preventDefault();
@@ -1858,7 +1846,7 @@ function checkFreemium(mode) {
 }
 
 function showPaywall(mode) {
-  const names = {bills:'Bills',clean:'Clean',eat:'Eat',plans:'Plans',body:'Body',focus:'Focus',cook:'Cook',sleep:'Sleep',vent:'Vent'};
+  const names = {bills:'Bills',clean:'Clean',body:'Body',focus:'Focus',cook:'Cook',sleep:'Sleep',vent:'Vent'};
   const el = document.getElementById(mode + '-result');
   el.innerHTML = `
     <div style="background:#1E1E21;border:1px solid #7C6FE0;border-radius:16px;padding:2rem;text-align:center">
