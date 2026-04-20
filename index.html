@@ -752,11 +752,16 @@ main { max-width: none; margin: 0 auto; padding: 2.35rem 1.5rem 6rem; }
       <div style="font-family:&#39;Syne&#39;,sans-serif;font-size:2.2rem;font-weight:700;letter-spacing:-0.03em;margin-bottom:0.5rem">doom<span style="color:#A99EF0">pile</span></div>
       <div style="font-size:1rem;color:#F0EEE8;margin-bottom:0.6rem;font-weight:600">Help for the piles you keep avoiding.</div>
       <div style="font-size:0.98rem;color:#6B6A66;margin-bottom:2rem;line-height:1.7">Bills. Cleaning. Body. Focus. Sleep.<br>Pick the pile you are stuck on and get one clear next step.</div>
+      <div style="background:rgba(124,111,224,0.1);border:1px solid rgba(124,111,224,0.24);border-radius:14px;padding:1rem 1.1rem;margin-bottom:1rem;text-align:left">
+        <div style="font-size:0.74rem;letter-spacing:0.1em;text-transform:uppercase;color:#A99EF0;margin-bottom:0.7rem">What you get straight away</div>
+        <div style="font-size:0.92rem;color:#F0EEE8;line-height:1.65;margin-bottom:0.45rem">One free try in every pile, so you can feel how it works before paying a penny.</div>
+        <div style="font-size:0.88rem;color:#9B9A96;line-height:1.6">Bills, Clean, Body, Focus, Cook, Sleep and Vent are all included in the free taste.</div>
+      </div>
       
       <div style="background:#161618;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:1.5rem;margin-bottom:1rem;text-align:left">
         <div style="font-size:0.95rem;color:#9B9A96;margin-bottom:1rem;text-align:center">Enter your email to get instant access</div>
         
-        <form action="https://promptlypr.us6.list-manage.com/subscribe/post?u=39e1171eb01d9cde1732c28f5&amp;id=c1e934ef66&amp;v_id=1318&amp;f_id=00eaeae1f0" method="post" id="mc-form" target="_blank" onsubmit="handleSignup(event)">
+        <form action="https://promptlypr.us6.list-manage.com/subscribe/post?u=39e1171eb01d9cde1732c28f5&amp;id=c1e934ef66&amp;v_id=1320&amp;f_id=00eaeae1f0" method="post" id="mc-form" target="_blank" onsubmit="handleSignup(event)">
           <input type="email" name="EMAIL" id="gate-email" placeholder="your@email.com" required="" style="width:100%;background:#0E0E0F;border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#F0EEE8;font-family:Inter,sans-serif;font-size:1rem;padding:14px 16px;outline:none;margin-bottom:12px;display:block">
           <div style="margin-bottom:10px">
             <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:0.9rem;color:#6B6A66;line-height:1.5">
@@ -764,9 +769,11 @@ main { max-width: none; margin: 0 auto; padding: 2.35rem 1.5rem 6rem; }
               <span>I agree to receive emails from Doom Pile. You can unsubscribe any time. See our <a href="/doompile-privacy.html" target="_blank" style="color:#A99EF0">privacy policy</a>.</span>
             </label>
           </div>
+          <div style="font-size:0.8rem;color:#6B6A66;line-height:1.5;margin-bottom:12px">We use Mailchimp to manage this list. By subscribing, you agree your information will be processed by Mailchimp.</div>
           <div style="position:absolute;left:-5000px" aria-hidden="true">
             <input type="text" name="b_39e1171eb01d9cde1732c28f5_c1e934ef66" tabindex="-1" value="">
           </div>
+          <input type="hidden" name="subscribe" value="Subscribe">
           <button type="submit" style="width:100%;padding:1rem 1.1rem;border-radius:10px;border:none;background:#7C6FE0;color:white;font-family:Syne,sans-serif;font-size:1.08rem;font-weight:600;cursor:pointer">Get instant access →</button>
         </form>
       </div>
@@ -790,7 +797,7 @@ main { max-width: none; margin: 0 auto; padding: 2.35rem 1.5rem 6rem; }
       <div style="background:#161618;border:1px solid #7C6FE0;border-radius:12px;padding:1rem 1.5rem;margin-bottom:1.5rem">
         <div style="font-family:monospace;font-size:1.4rem;color:#A99EF0;letter-spacing:0.12em">freethedoom</div>
       </div>
-      <div style="font-size:0.92rem;color:#6B6A66;margin-bottom:1.5rem;line-height:1.5">We've also sent this to your inbox. Don't lose it!</div>
+      <div style="font-size:0.92rem;color:#6B6A66;margin-bottom:1.5rem;line-height:1.5">Keep this code handy while email delivery is being finalised.</div>
       <button onclick="useCode()" style="width:100%;padding:1.05rem 1.1rem;border-radius:12px;border:none;background:#7C6FE0;color:white;font-family:Syne,sans-serif;font-size:1.08rem;font-weight:600;cursor:pointer">Enter Doom Pile →</button>
     </div>
 
@@ -1812,6 +1819,16 @@ const FULL_STRIPE_URL = 'https://buy.stripe.com/5kQfZj7HZgZSawwbnZcQU0g';
 const FREE_MODES = [];
 const FULL_MODES = ['bills','clean','body','focus','cook','sleep','vent'];
 
+function openGate() {
+  document.getElementById('gate').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeGate() {
+  document.getElementById('gate').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
 function handleSignup(e) {
   e.preventDefault();
   const email = document.getElementById('gate-email').value;
@@ -1831,7 +1848,7 @@ function handleSignup(e) {
 }
 
 function useCode() {
-  document.getElementById('gate').style.display = 'none';
+  closeGate();
   localStorage.setItem('dp_auth', '1');
 }
 
@@ -1853,10 +1870,10 @@ function getTier() {
 function checkGate() {
   const val = document.getElementById('gate-input').value.trim();
   if(val === FULL_PASS || val === LEGACY_FULL_PASS) {
-    document.getElementById('gate').style.display = 'none';
+    closeGate();
     setTier('full');
   } else if(val === BETA_PASS) {
-    document.getElementById('gate').style.display = 'none';
+    closeGate();
     localStorage.setItem('dp_auth', '1');
   } else {
     document.getElementById('gate-error').style.display = 'block';
@@ -1866,7 +1883,9 @@ function checkGate() {
 
 function initGate() {
   if(localStorage.getItem('dp_auth') === '1') {
-    document.getElementById('gate').style.display = 'none';
+    closeGate();
+  } else {
+    openGate();
   }
 }
 
