@@ -567,6 +567,77 @@ main { max-width: none; margin: 0 auto; padding: 2.35rem 1.5rem 6rem; }
   color: var(--muted2);
   line-height: 1.55;
 }
+.feature-card-link {
+  display: block;
+  margin-top: 1.1rem;
+  text-decoration: none;
+  color: inherit;
+}
+.feature-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 26px;
+  border: 1px solid rgba(124,111,224,0.22);
+  background:
+    radial-gradient(circle at top right, rgba(124,111,224,0.18), transparent 28%),
+    linear-gradient(135deg, rgba(24,24,28,0.98), rgba(18,18,21,0.98));
+  padding: 1.35rem 1.35rem 1.3rem;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.feature-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(169,158,240,0.42);
+  box-shadow: 0 22px 44px rgba(0,0,0,0.22);
+}
+.feature-card-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.38rem 0.72rem;
+  border-radius: 999px;
+  background: rgba(124,111,224,0.12);
+  border: 1px solid rgba(124,111,224,0.28);
+  color: var(--purple-light);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.95rem;
+}
+.feature-card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.7rem, 3vw, 2.35rem);
+  line-height: 0.96;
+  letter-spacing: -0.04em;
+  margin-bottom: 0.65rem;
+}
+.feature-card-desc {
+  max-width: 38rem;
+  font-size: 0.98rem;
+  line-height: 1.65;
+  color: var(--muted2);
+  margin-bottom: 1rem;
+}
+.feature-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+.feature-chip {
+  padding: 0.46rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.09);
+  background: rgba(255,255,255,0.04);
+  color: #D9D4C7;
+  font-size: 0.78rem;
+}
+.feature-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: white;
+  font-weight: 600;
+}
 @media (max-width: 720px) {
   #screen-home {
     max-width: none;
@@ -887,6 +958,22 @@ main { max-width: none; margin: 0 auto; padding: 2.35rem 1.5rem 6rem; }
       <div class="pile-btn-desc">Brain dump. Get it out. Feel clearer.</div>
     </div>
   </div>
+  <a href="/results-os/" class="feature-card-link">
+    <div class="feature-card">
+      <div class="feature-card-kicker">New feature · founder mode</div>
+      <div class="feature-card-title">Results OS</div>
+      <div class="feature-card-desc">
+        A founder coaching dashboard for the £0 → £1M path. Preview the opening days for free, then unlock the full 21-day curriculum, metrics system and review loop.
+      </div>
+      <div class="feature-card-meta">
+        <div class="feature-chip">Free preview</div>
+        <div class="feature-chip">Paid unlock</div>
+        <div class="feature-chip">21-day curriculum</div>
+        <div class="feature-chip">Weekly metrics</div>
+      </div>
+      <div class="feature-card-cta">Open Results OS →</div>
+    </div>
+  </a>
 </div>
 
 <!-- ══ BILLS ══ -->

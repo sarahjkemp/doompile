@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Results OS | Doom Pile</title>
+  <meta
+    name="description"
+    content="Results OS is a founder-focus dashboard for the £0 to £1M journey: daily prompts, weekly numbers, honest reviews, and a trap for shiny new ideas."
+  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #0e0e0c;
+      --paper: #f4f1ea;
+      --paper-deep: #eae5da;
+      --muted: #6b6862;
+      --accent: #c8431f;
+      --green: #2f5d3a;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(ellipse at top, rgba(200, 67, 31, 0.05), transparent 46%),
+        radial-gradient(ellipse at bottom right, rgba(14, 14, 12, 0.04), transparent 42%),
+        var(--paper);
+      color: var(--ink);
+      font-family: "Inter Tight", system-ui, sans-serif;
+    }
+
+    textarea, input, select, button { font: inherit; }
+    a { color: inherit; }
+    ::selection { background: var(--ink); color: var(--paper); }
+    details summary::-webkit-details-marker { display: none; }
+
+    .results-shell { min-height: 100vh; }
+    .results-mobile-grid-4,
+    .results-stage-grid,
+    .results-review-stats { display: grid; }
+
+    @media (max-width: 720px) {
+      .results-mobile-grid-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 14px !important;
+      }
+      .results-stage-grid {
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+      }
+      .results-review-stats {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const tokens = {
+      ink: "#0E0E0C",
+      paper: "#F4F1EA",
+      paperDeep: "#EAE5DA",
+      muted: "#6B6862",
+      accent: "#C8431F",
+      accentSoft: "#E8C9BC",
+      green: "#2F5D3A",
+      fontDisplay: '"Fraunces", "Times New Roman", serif',
+      fontBody: '"Inter Tight", system-ui, sans-serif',
+      fontMono: '"JetBrains Mono", ui-monospace, monospace',
+    };
+
+    const STORE_KEY = "resultsos:coach:v1";
+    const RESULTS_OS_UNLOCK_KEY = "resultsos:unlocked:v1";
+    const RESULTS_OS_PREVIEW_DAYS = 3;
+    const RESULTS_OS_UNLOCK_CODE = "RESULTSOS21";
+    const RESULTS_OS_UNLOCK_CODE_LEGACY = "resultsos21";
+    const RESULTS_OS_CHECKOUT_URL = "https://buy.stripe.com/5kQfZj7HZgZSawwbnZcQU0g";
+
+    function loadState() {
+      try {
+        const raw = window.localStorage.getItem(STORE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function saveState(state) {
+      try {
+        window.localStorage.setItem(STORE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.warn("save failed", e);
+      }
+    }
+
+    function isResultsUnlocked() {
+      try {
+        return window.localStorage.getItem(RESULTS_OS_UNLOCK_KEY) === "1";
+      } catch {
+        return false;
+      }
+    }
+
+    function unlockResults() {
+      try {
+        window.localStorage.setItem(RESULTS_OS_UNLOCK_KEY, "1");
+      } catch (e) {
+        console.warn("unlock failed", e);
+      }
+    }
+
+    const STAGE_1_PROMPTS = [
+      { day: 1, title: "The £0 truth", body: "You haven't been paid yet. That's the only fact that matters. Every business idea you have right now is theoretical until someone wires you money. Today's question isn't 'what should I build' — it's 'who has a problem I can solve this week, who has a budget?'", today: "Make a list of 30 specific people you could pitch SJK Labs to. Names. Companies. Why they'd care. Do not stop at 10. The list itself is the asset.", why: "At £0, the constraint is never strategy. It's volume of specific, named conversations." },
+      { day: 2, title: "Pitch one. Today.", body: "Yesterday you made a list. Today you pitch one person on it. Not the easiest. Not the hardest. The one most likely to say 'tell me more' within 48 hours.", today: "Send ONE pitch email. Reference something specific about them. Make one clear ask: a 20-min call this week.", why: "First sent email is the hardest. After that they get easier. Volume comes from removing emotional weight, not adding effort." },
+      { day: 3, title: "The dopamine you'll feel today", body: "By now you'll want to redesign your website, write a blog post, or have a 'quick idea' for a new offer. That's your brain trying to escape the discomfort of waiting for replies. Don't follow it.", today: "Send THREE more pitch emails. Same template, different specifics. No new project starts today.", why: "Your weakness is not lack of ideas. It's chasing the next idea before the current one has been tested with real money." },
+      { day: 4, title: "What 'pitching' actually means", body: "Most pitches fail not because the offer is bad but because the email assumes the reader cares. They don't. They have 200 unread emails. Your job: be the one that's clearly about THEM, in the first sentence.", today: "Look at yesterday's three emails. Rewrite the subject line + first sentence of each to lead with the recipient, not you. Send three more today, the new way.", why: "Conversion at £0 is mostly a copy problem dressed as a pipeline problem." },
+      { day: 5, title: "Friday: the truth check", body: "It's Friday. This week you sent pitches. How many got replies? How many turned into calls? If the answer is zero, that's information, not failure.", today: "Count. Write down: pitches sent, replies received, calls booked. No analysis yet. Just numbers.", why: "You can't fix what you don't measure. But you can also avoid measuring as a way of avoiding the truth." },
+      { day: 6, title: "Rest day — but with one rule", body: "Take the weekend. Go to a gig. See the boyfriend. Spin class. The work compounds when you stop too. But: no 'quick' new business ideas in the Notes app. If one comes, capture it in the Idea Trap and let it die there.", today: "Rest. Move your body. Don't open the laptop for 'just one thing'.", why: "Neurodivergent founders burn out by treating weekends as catch-up days. The catch-up never catches up." },
+      { day: 7, title: "Sunday: the planning trap", body: "Today you'll feel the urge to redesign next week. Resist. The plan is: send more pitches, follow up on last week's, take the calls you booked. That's it. Don't add a content schedule. Don't add Doom Pile. Don't.", today: "Re-read last week's pitches. Pick the 5 that didn't reply. Draft follow-ups for tomorrow.", why: "Replanning is a respectable form of procrastination. It feels productive because it's strategic. It isn't." },
+      { day: 8, title: "Follow up. The money is in the follow-up.", body: "80% of replies come from follow-ups, not first emails. Most founders never follow up because it feels needy. It isn't. It's professional. It says: I noticed you didn't reply, here's another reason this matters.", today: "Send 5 follow-up emails. Each one references a specific thing about their business that's relevant THIS WEEK. Not 'just bumping this'.", why: "First emails get 5-15% reply rates. Follow-ups push it to 25-40%. You're leaving 70% of your pipeline on the table by not following up." },
+      { day: 9, title: "If you've had a call by now", body: "If you've had any reply, any call, any glimmer — that's the proof you needed that this works. If you haven't yet, your list isn't long enough or your copy isn't sharp enough. Both are fixable today.", today: "Either: prep for an upcoming call (write down the one outcome you want from it), or: send 5 more cold pitches with a new angle.", why: "Pre-call prep is the highest-leverage 30 minutes you can spend at £0. A booked call is a fragile thing. Don't waste it." },
+      { day: 10, title: "The price problem", body: "When someone says yes to a call, your brain will say 'charge less'. Don't. At £0 your job isn't to find the cheapest yes — it's to find proof that someone will pay a real price for what you do.", today: "Decide your starter price for SJK Labs. Write it down. £X for Y deliverable in Z weeks. One number. Don't change it for the first 3 prospects.", why: "Pricing instability is what keeps founders at £0. Prospects can smell uncertainty. Pick a number and hold it." },
+      { day: 11, title: "What 'closing' actually is", body: "Closing isn't pressure. It's clarity. Most deals die because the founder leaves the call without a clear next step + date. 'I'll send you a proposal sometime' is how £0 stays £0.", today: "If you have a call this week, end it with: 'I'll send a one-page proposal by [day], can we book a 15-min decision call for [day]?' Both dates. Booked.", why: "The gap between call and contract is where 80% of deals die. Close the gap with calendar slots, not promises." },
+      { day: 12, title: "The shiny thing test", body: "By day 12 you'll have a new business idea. You always do. It will feel urgent. It will feel like the breakthrough. It is not.", today: "If a new idea has appeared, write it in the Idea Trap. Do not act on it. Re-read your million-pound vision. Continue the outreach you've already started.", why: "New ideas at the wrong stage are sabotage. Your brain offers them precisely when the current path requires uncomfortable patience." },
+      { day: 13, title: "The boring middle", body: "Two weeks in, this is where most people quit. Replies are slow. Doubts creep in. The thrill of starting has worn off. This is not failure — this is the actual texture of building a business. It's mostly boring.", today: "Send 5 more pitches. Follow up on 5 old ones. That's it. The boring part is the work.", why: "Survivorship bias makes successful founders look exciting. The reality is they did this exact boring thing for years." },
+      { day: 14, title: "Week 2 truth check", body: "Same as Friday week 1. Pitches sent, replies, calls. If the numbers are flat, your list or your copy needs work. If they're growing, keep doing what you're doing for another 2 weeks before changing anything.", today: "Numbers only. No interpretation. Just counts.", why: "Two data points is a trend. One is a story you're telling yourself." },
+      { day: 15, title: "When to charge for a 'paid pilot'", body: "If you have a warm prospect who's hedging, offer a small paid pilot — 2 weeks, £500-£1500, clear deliverable. Not free. Never free. Free creates wrong expectations and wrong clients.", today: "If you have a hedging prospect, send them a paid pilot proposal. One page. Three sections: what, when, how much.", why: "Free work signals you're not sure. A small paid pilot signals confidence and gives them a low-risk yes." },
+      { day: 16, title: "Visibility ≠ revenue", body: "You'll be tempted to post on LinkedIn instead of pitching. Posting feels like work but at £0 it almost never produces revenue inside 30 days. Pitching does.", today: "If you must post, post AFTER you've sent your pitches and follow-ups for the day. Outreach is the verb that pays. Posts are the verb that comforts.", why: "At £0, content is for after you have proof. Before proof, content is procrastination dressed as marketing." },
+      { day: 17, title: "Your unfair advantage", body: "You have one most founders don't: you're a trained journalist. You can write about people in a way that makes them feel seen. Use it. Pitches that show you've actually read someone's work convert 10x cold templates.", today: "Pick 3 prospects. Spend 15 min on each reading their actual writing/work. Pitch with a specific reference. Send all three.", why: "Personalisation that's actually personal compounds. Mail-merge templates don't." },
+      { day: 18, title: "If you haven't booked a call yet", body: "Three weeks in, no calls means one of two things: list quality is wrong (these aren't decision-makers, or they don't have budget), or copy is wrong. It's almost never the offer at this stage.", today: "Audit your list. Cross off anyone who isn't a decision-maker with a budget. Add 10 new ones who are. Pitch 5 of the new ones today.", why: "Pitching the wrong people perfectly still gets you nothing. Right people, average copy, beats wrong people, perfect copy." },
+      { day: 19, title: "The first yes", body: "When you get your first yes, your brain will want to celebrate by starting three new things. Don't. Deliver. Over-deliver. Get the testimonial. Get the case study. Get the referral. That one client is now your most important asset for the next 6 months.", today: "If you've had a yes: send the contract today. If you haven't: pitch 5 more.", why: "First clients aren't revenue. They're proof. Treat them like the strategic asset they are, not just the deal." },
+      { day: 20, title: "Compounding starts now", body: "One paying client → testimonial → next pitch is easier → second client → case study → third client comes from referral. This is how every consultancy that ever existed got built. There's no shortcut.", today: "Whatever stage you're at: pitch 3, follow up 3, prep for any call you have. Do it without drama.", why: "Boredom of consistency is the price of compounding. Most founders quit just before it kicks in." },
+      { day: 21, title: "Three week review", body: "Three weeks. Look at what you did, not what you planned. How many pitches? How many replies? How many calls? Any money? This is your real baseline. Now we plan the next three weeks based on what actually moved.", today: "Open the Honesty Log. Read it back. Send Sarah's coach (Claude in chat) the numbers and ask for the next 21 days.", why: "Cycles of 21 days are long enough to see real patterns and short enough to course-correct before too much sunk cost." },
+    ];
+
+    const STAGE_1_METRICS = [
+      { key: "pitches_sent", label: "Pitches sent", target_per_week: 15 },
+      { key: "replies_received", label: "Replies received", target_per_week: 3 },
+      { key: "calls_booked", label: "Calls booked", target_per_week: 2 },
+      { key: "revenue", label: "Revenue (£)", target_per_week: 0, isMoney: true },
+    ];
+
+    function todayKey() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    }
+
+    function startOfWeekKey() {
+      const d = new Date();
+      const day = d.getDay();
+      const diff = day === 0 ? -6 : 1 - day;
+      d.setDate(d.getDate() + diff);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    }
+
+    function daysBetween(d1, d2) {
+      return Math.floor((new Date(d2) - new Date(d1)) / 86400000);
+    }
+
+    function ResultsOS() {
+      const [hydrated, setHydrated] = useState(false);
+      const [state, setState] = useState({
+        startDate: todayKey(),
+        currentDay: 1,
+        completed: {},
+        metrics: {},
+        parkedIdeas: [],
+        log: [],
+        weeklyReviews: [],
+        revenueTotal: 0,
+        firstClientDate: null,
+      });
+      const [view, setView] = useState("today");
+      const [trapOpen, setTrapOpen] = useState(false);
+      const [logOpen, setLogOpen] = useState(false);
+      const [unlockOpen, setUnlockOpen] = useState(false);
+      const [isUnlocked, setIsUnlocked] = useState(false);
+
+      useEffect(() => {
+        const loaded = loadState();
+        if (loaded) setState((prev) => ({ ...prev, ...loaded }));
+        setIsUnlocked(isResultsUnlocked());
+        setHydrated(true);
+      }, []);
+
+      useEffect(() => {
+        if (!hydrated) return;
+        saveState(state);
+      }, [state, hydrated]);
+
+      useEffect(() => {
+        if (!hydrated) return;
+        const elapsed = daysBetween(state.startDate, todayKey()) + 1;
+        const target = Math.min(elapsed, STAGE_1_PROMPTS.length);
+        if (target !== state.currentDay && target > 0) {
+          setState((prev) => ({ ...prev, currentDay: target }));
+        }
+      }, [hydrated, state.startDate]);
+
+      if (!hydrated) {
+        return <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: tokens.fontMono, fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", color: tokens.muted }}>loading results os...</div>;
+      }
+
+      const todayPrompt = STAGE_1_PROMPTS[state.currentDay - 1] || STAGE_1_PROMPTS[STAGE_1_PROMPTS.length - 1];
+      const weekKey = startOfWeekKey();
+      const thisWeek = state.metrics[weekKey] || {};
+      const previewLocked = !isUnlocked && state.currentDay > RESULTS_OS_PREVIEW_DAYS;
+      const previewDaysLeft = Math.max(0, RESULTS_OS_PREVIEW_DAYS - state.currentDay + 1);
+
+      const bumpMetric = (key, delta = 1) => {
+        setState((prev) => {
+          const week = prev.metrics[weekKey] || {};
+          return { ...prev, metrics: { ...prev.metrics, [weekKey]: { ...week, [key]: Math.max(0, (week[key] || 0) + delta) } } };
+        });
+      };
+
+      const setMetric = (key, value) => {
+        setState((prev) => {
+          const week = prev.metrics[weekKey] || {};
+          return { ...prev, metrics: { ...prev.metrics, [weekKey]: { ...week, [key]: value } } };
+        });
+      };
+
+      const markTodayComplete = () => {
+        setState((prev) => ({ ...prev, completed: { ...prev.completed, [`day-${state.currentDay}`]: true } }));
+      };
+
+      const isTodayComplete = state.completed[`day-${state.currentDay}`];
+
+      return (
+        <div className="results-shell">
+          <div style={{ maxWidth: "980px", margin: "0 auto", padding: "24px 22px 0" }}>
+            <a href="/" style={{ display: "inline-flex", alignItems: "center", gap: "10px", textDecoration: "none", fontFamily: tokens.fontMono, fontSize: "11px", letterSpacing: "0.16em", textTransform: "uppercase", color: tokens.muted }}>← Back to Doom Pile</a>
+          </div>
+
+          <div style={{ padding: "18px 28px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${tokens.paperDeep}`, position: "sticky", top: 0, background: "rgba(244, 241, 234, 0.96)", backdropFilter: "blur(12px)", zIndex: 10 }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: "12px" }}>
+              <span style={{ fontFamily: tokens.fontDisplay, fontSize: "20px", fontStyle: "italic", fontWeight: 500 }}>Results</span>
+              <span style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.muted }}>OS · Stage 1</span>
+            </div>
+            <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.18em", textTransform: "uppercase", color: tokens.muted }}>Day {state.currentDay} / 21</div>
+          </div>
+
+          <div style={{ maxWidth: "980px", margin: "0 auto", padding: "20px 28px 0" }}>
+            <div style={{ padding: "28px", background: "linear-gradient(135deg, rgba(255,255,255,0.55), rgba(239,232,218,0.95))", border: `1px solid ${tokens.paperDeep}`, marginBottom: "18px" }}>
+              <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.accent, marginBottom: "10px" }}>Founder mode</div>
+              <h1 style={{ fontFamily: tokens.fontDisplay, fontSize: "clamp(34px, 6vw, 58px)", lineHeight: 0.96, letterSpacing: "-0.03em", margin: "0 0 14px", fontWeight: 500 }}>A private coaching dashboard for the <span style={{ fontStyle: "italic" }}>£0 → £1M</span> path.</h1>
+              <p style={{ maxWidth: "46rem", margin: 0, fontSize: "16px", color: tokens.muted, lineHeight: 1.65 }}>Results OS is for the days when strategy turns into avoidance. It keeps the focus on outreach, numbers, honest review, and not starting a new shiny thing.</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginTop: "18px" }}>
+                <div style={{ padding: "8px 12px", border: `1px solid ${tokens.paperDeep}`, background: "rgba(255,255,255,0.6)", fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase", color: tokens.muted }}>
+                  {isUnlocked ? "Full curriculum unlocked" : `Free preview · first ${RESULTS_OS_PREVIEW_DAYS} days`}
+                </div>
+                {!isUnlocked && (
+                  <button onClick={() => setUnlockOpen(true)} style={{ padding: "10px 14px", background: tokens.ink, color: tokens.paper, border: "none", fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase", cursor: "pointer" }}>
+                    Unlock all 21 days
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", padding: "0 28px", borderBottom: `1px solid ${tokens.paperDeep}`, overflowX: "auto" }}>
+            {[
+              { k: "today", label: "Today" },
+              { k: "metrics", label: "The Numbers" },
+              { k: "vision", label: "North Star" },
+              { k: "review", label: "Weekly Review" },
+            ].map((tab) => (
+              <button key={tab.k} onClick={() => setView(tab.k)} style={{ padding: "16px 16px 14px", background: "transparent", border: "none", borderBottom: `2px solid ${view === tab.k ? tokens.accent : "transparent"}`, fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", color: view === tab.k ? tokens.ink : tokens.muted, cursor: "pointer", flexShrink: 0 }}>{tab.label}</button>
+            ))}
+          </div>
+
+          <div style={{ maxWidth: "780px", margin: "0 auto", padding: "32px 28px 120px" }}>
+            {view === "today" && (
+              previewLocked ? (
+                <LockedCurriculumView currentDay={state.currentDay} onUnlock={() => setUnlockOpen(true)} />
+              ) : (
+                <TodayView prompt={todayPrompt} day={state.currentDay} isComplete={isTodayComplete} onComplete={markTodayComplete} onLog={() => setLogOpen(true)} thisWeek={thisWeek} previewDaysLeft={!isUnlocked ? previewDaysLeft : null} />
+              )
+            )}
+            {view === "metrics" && (
+              <MetricsView
+                metrics={state.metrics}
+                weekKey={weekKey}
+                thisWeek={thisWeek}
+                onBump={bumpMetric}
+                onSet={setMetric}
+                revenueTotal={state.revenueTotal}
+                setRevenueTotal={(v) => setState((p) => ({ ...p, revenueTotal: v }))}
+                firstClientDate={state.firstClientDate}
+                setFirstClientDate={(v) => setState((p) => ({ ...p, firstClientDate: v }))}
+                locked={!isUnlocked}
+                onUnlock={() => setUnlockOpen(true)}
+              />
+            )}
+            {view === "vision" && <VisionView />}
+            {view === "review" && (
+              <ReviewView weeklyReviews={state.weeklyReviews} onSubmitReview={(review) => setState((p) => ({ ...p, weeklyReviews: [review, ...p.weeklyReviews] }))} locked={!isUnlocked} onUnlock={() => setUnlockOpen(true)} />
+            )}
+          </div>
+
+          {isUnlocked && (
+            <button onClick={() => setTrapOpen(true)} title="Got a new idea? Run it through the trap." style={{ position: "fixed", bottom: "24px", right: "24px", background: tokens.ink, color: tokens.paper, border: "none", padding: "16px 22px", borderRadius: "999px", fontFamily: tokens.fontMono, fontSize: "11px", letterSpacing: "0.16em", textTransform: "uppercase", cursor: "pointer", boxShadow: "0 8px 28px rgba(14,14,12,0.25)", zIndex: 20, display: "flex", alignItems: "center", gap: "8px" }}>
+              <span style={{ color: tokens.accent }}>!</span> New idea?
+            </button>
+          )}
+
+          <DopamineTrapModal open={trapOpen} onClose={() => setTrapOpen(false)} onPark={(idea) => setState((prev) => ({ ...prev, parkedIdeas: [idea, ...prev.parkedIdeas] }))} parkedIdeas={state.parkedIdeas} currentTask={todayPrompt.today} />
+          <LogModal open={logOpen} onClose={() => setLogOpen(false)} log={state.log} onAdd={(entry) => setState((prev) => ({ ...prev, log: [entry, ...prev.log] }))} />
+          <UnlockResultsModal open={unlockOpen} onClose={() => setUnlockOpen(false)} onUnlock={() => { unlockResults(); setIsUnlocked(true); setUnlockOpen(false); }} />
+        </div>
+      );
+    }
+
+    function TodayView({ prompt, day, isComplete, onComplete, onLog, thisWeek, previewDaysLeft }) {
+      const h = new Date().getHours();
+      const greeting = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
+      return (
+        <div>
+          {previewDaysLeft !== null && (
+            <div style={{ padding: "14px 16px", marginBottom: "22px", border: `1px solid ${tokens.paperDeep}`, background: "rgba(255,255,255,0.55)", fontFamily: tokens.fontBody, fontSize: "14px", color: tokens.muted, lineHeight: 1.55 }}>
+              Free preview mode. You can explore the first {RESULTS_OS_PREVIEW_DAYS} days before unlocking the full 21-day curriculum.
+            </div>
+          )}
+          <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.muted, marginBottom: "8px" }}>{greeting}, Sarah · Day {day}</div>
+          <h2 style={{ fontFamily: tokens.fontDisplay, fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 400, lineHeight: 1, letterSpacing: "-0.02em", margin: "0 0 32px", fontStyle: "italic" }}>{prompt.title}</h2>
+          <p style={{ fontFamily: tokens.fontDisplay, fontSize: "20px", lineHeight: 1.5, color: tokens.ink, margin: "0 0 40px", fontWeight: 400 }}>{prompt.body}</p>
+
+          <div style={{ background: tokens.ink, color: tokens.paper, padding: "32px", marginBottom: "32px" }}>
+            <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.accent, marginBottom: "12px" }}>Today&apos;s one move</div>
+            <div style={{ fontFamily: tokens.fontDisplay, fontSize: "26px", lineHeight: 1.3, fontWeight: 500, marginBottom: "20px" }}>{prompt.today}</div>
+            <div style={{ fontFamily: tokens.fontMono, fontSize: "11px", letterSpacing: "0.08em", color: tokens.accentSoft, lineHeight: 1.6, paddingTop: "16px", borderTop: "1px solid rgba(244,241,234,0.15)" }}>WHY → {prompt.why}</div>
+          </div>
+
+          <div style={{ display: "grid", gap: "12px", marginBottom: "40px" }}>
+            <button onClick={onComplete} disabled={isComplete} style={{ padding: "18px 24px", background: isComplete ? tokens.green : tokens.accent, color: tokens.paper, border: "none", fontFamily: tokens.fontMono, fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", cursor: isComplete ? "default" : "pointer", opacity: isComplete ? 0.85 : 1 }}>{isComplete ? "Done today" : "I did the thing"}</button>
+            <button onClick={onLog} style={{ padding: "16px 24px", background: "transparent", color: tokens.ink, border: `1px solid ${tokens.ink}`, fontFamily: tokens.fontMono, fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", cursor: "pointer" }}>Log what actually happened</button>
+          </div>
+
+          <div style={{ padding: "20px 0", borderTop: `1px solid ${tokens.paperDeep}`, borderBottom: `1px solid ${tokens.paperDeep}`, marginBottom: "32px" }}>
+            <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.20em", textTransform: "uppercase", color: tokens.muted, marginBottom: "12px" }}>This week so far</div>
+            <div className="results-mobile-grid-4" style={{ gridTemplateColumns: "repeat(4, 1fr)", gap: "16px" }}>
+              {STAGE_1_METRICS.map((m) => (
+                <div key={m.key}>
+                  <div style={{ fontFamily: tokens.fontDisplay, fontSize: "32px", fontWeight: 500, color: m.key === "revenue" && (thisWeek[m.key] || 0) > 0 ? tokens.green : tokens.ink, lineHeight: 1 }}>{m.isMoney ? `£${thisWeek[m.key] || 0}` : thisWeek[m.key] || 0}</div>
+                  <div style={{ fontFamily: tokens.fontMono, fontSize: "9px", letterSpacing: "0.14em", textTransform: "uppercase", color: tokens.muted, marginTop: "4px", lineHeight: 1.3 }}>{m.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <details>
+            <summary style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.20em", textTransform: "uppercase", color: tokens.muted, cursor: "pointer", listStyle: "none", padding: "12px 0" }}>The hard truth at this stage</summary>
+            <div style={{ padding: "20px", background: tokens.paperDeep, borderLeft: `2px solid ${tokens.accent}`, fontFamily: tokens.fontDisplay, fontSize: "16px", fontStyle: "italic", lineHeight: 1.5, color: tokens.ink, marginTop: "8px" }}>You&apos;re at £0. This means: no content schedule, no podcast guesting, no Doom Pile development, no website tweaks, no new offer ideas — until you have your first 2-3 paying clients for SJK Labs. Outreach is the verb that pays. Everything else compounds after you have proof someone will pay you.</div>
+          </details>
+        </div>
+      );
+    }
+
+    function MetricsView({ metrics, weekKey, thisWeek, onBump, onSet, revenueTotal, setRevenueTotal, firstClientDate, setFirstClientDate, locked, onUnlock }) {
+      return (
+        <div>
+          <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.muted, marginBottom: "8px" }}>Week of {weekKey}</div>
+          <h2 style={{ fontFamily: tokens.fontDisplay, fontSize: "clamp(32px, 4.5vw, 48px)", fontWeight: 400, lineHeight: 1, letterSpacing: "-0.02em", margin: "0 0 12px", fontStyle: "italic" }}>The only numbers that matter.</h2>
+          <p style={{ fontFamily: tokens.fontBody, fontSize: "15px", color: tokens.muted, lineHeight: 1.5, marginBottom: "40px" }}>At £0, only four numbers count. Tap to add. The goal is volume of outreach until something paid lands.</p>
+          {locked && (
+            <div style={{ padding: "16px 18px", marginBottom: "22px", border: `1px solid ${tokens.paperDeep}`, background: "rgba(255,255,255,0.5)", fontFamily: tokens.fontBody, fontSize: "14px", color: tokens.muted, lineHeight: 1.55 }}>
+              Preview includes the dashboard layout. Unlock Results OS to track the full metric system, total revenue, first-client milestone, and past-week archive.
+            </div>
+          )}
+          {STAGE_1_METRICS.map((m) => <MetricRow key={m.key} label={m.label} value={thisWeek[m.key] || 0} target={m.target_per_week} isMoney={m.isMoney} onIncrement={() => onBump(m.key, 1)} onDecrement={() => onBump(m.key, -1)} onSet={(v) => onSet(m.key, v)} disabled={locked} />)}
+
+          <div style={{ marginTop: "48px", padding: "32px", background: tokens.ink, color: tokens.paper, opacity: locked ? 0.55 : 1 }}>
+            <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.accent, marginBottom: "12px" }}>Total revenue earned</div>
+            <div style={{ display: "flex", alignItems: "baseline", gap: "12px" }}>
+              <span style={{ fontFamily: tokens.fontDisplay, fontSize: "20px", color: tokens.accentSoft }}>£</span>
+              <input type="number" disabled={locked} value={revenueTotal} onChange={(e) => setRevenueTotal(Number(e.target.value) || 0)} style={{ fontFamily: tokens.fontDisplay, fontSize: "56px", fontWeight: 500, background: "transparent", border: "none", color: tokens.paper, outline: "none", width: "100%", padding: 0 }} />
+            </div>
+            <div style={{ fontFamily: tokens.fontMono, fontSize: "11px", color: tokens.accentSoft, marginTop: "8px", letterSpacing: "0.1em" }}>Goal: £1,000,000</div>
+            <div style={{ marginTop: "16px", height: "4px", background: "rgba(244,241,234,0.15)", position: "relative" }}>
+              <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${Math.min(100, (revenueTotal / 1000000) * 100)}%`, background: tokens.accent, transition: "width 0.4s ease" }} />
+            </div>
+            <div style={{ marginTop: "12px", fontFamily: tokens.fontMono, fontSize: "10px", color: tokens.accentSoft, letterSpacing: "0.1em" }}>{((revenueTotal / 1000000) * 100).toFixed(4)}% of the way there</div>
+          </div>
+
+          {!locked && !firstClientDate && revenueTotal > 0 && <button onClick={() => setFirstClientDate(todayKey())} style={{ marginTop: "20px", width: "100%", padding: "16px 24px", background: tokens.green, color: tokens.paper, border: "none", fontFamily: tokens.fontMono, fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", cursor: "pointer" }}>Mark today as first-client day</button>}
+          {firstClientDate && <div style={{ marginTop: "20px", padding: "20px", border: `1px solid ${tokens.green}`, fontFamily: tokens.fontDisplay, fontSize: "16px", fontStyle: "italic", color: tokens.ink }}>First paying client: <strong>{firstClientDate}</strong>. Everything compounds from here.</div>}
+          {locked ? (
+            <LockedPanel
+              title="Past weeks, revenue tracker, and milestone log are part of the paid unlock."
+              body="The free preview shows the structure. The paid version turns it into a real operating system."
+              cta="Unlock full Results OS"
+              onUnlock={onUnlock}
+            />
+          ) : (
+            <PastWeeks metrics={metrics} currentWeekKey={weekKey} />
+          )}
+        </div>
+      );
+    }
+
+    function MetricRow({ label, value, target, isMoney, onIncrement, onDecrement, onSet, disabled }) {
+      const [editing, setEditing] = useState(false);
+      const [draft, setDraft] = useState(value);
+      useEffect(() => setDraft(value), [value]);
+      const onTarget = target > 0 && value >= target;
+
+      return (
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px", padding: "20px 0", borderBottom: `1px solid ${tokens.paperDeep}` }}>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.18em", textTransform: "uppercase", color: tokens.muted, marginBottom: "4px" }}>{label}</div>
+            {target > 0 && <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", color: onTarget ? tokens.green : tokens.muted, letterSpacing: "0.08em" }}>{onTarget ? "on target" : `target: ${target}/week`}</div>}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
+            <button disabled={disabled} onClick={onDecrement} style={{ width: "36px", height: "36px", border: `1px solid ${tokens.ink}`, background: "transparent", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.4 : 1, fontFamily: tokens.fontMono, fontSize: "18px" }}>−</button>
+            {editing ? (
+              <input type="number" disabled={disabled} value={draft} onChange={(e) => setDraft(Number(e.target.value) || 0)} onBlur={() => { onSet(draft); setEditing(false); }} onKeyDown={(e) => e.key === "Enter" && e.target.blur()} autoFocus style={{ width: "80px", fontFamily: tokens.fontDisplay, fontSize: "32px", fontWeight: 500, border: "none", borderBottom: `1px solid ${tokens.accent}`, background: "transparent", textAlign: "center", outline: "none", color: tokens.ink }} />
+            ) : (
+              <button disabled={disabled} onClick={() => setEditing(true)} style={{ minWidth: "80px", fontFamily: tokens.fontDisplay, fontSize: "32px", fontWeight: 500, background: "transparent", border: "none", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.55 : 1, color: tokens.ink, padding: "0 4px" }} title="Tap to edit">{isMoney ? `£${value}` : value}</button>
+            )}
+            <button disabled={disabled} onClick={onIncrement} style={{ width: "36px", height: "36px", border: `1px solid ${tokens.ink}`, background: tokens.ink, color: tokens.paper, cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.4 : 1, fontFamily: tokens.fontMono, fontSize: "18px" }}>+</button>
+          </div>
+        </div>
+      );
+    }
+
+    function PastWeeks({ metrics, currentWeekKey }) {
+      const past = Object.entries(metrics).filter(([k]) => k !== currentWeekKey).sort((a, b) => b[0].localeCompare(a[0])).slice(0, 8);
+      if (past.length === 0) return null;
+      return (
+        <div style={{ marginTop: "48px" }}>
+          <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.20em", textTransform: "uppercase", color: tokens.muted, marginBottom: "16px" }}>Past weeks</div>
+          {past.map(([weekK, vals]) => (
+            <div key={weekK} style={{ display: "flex", justifyContent: "space-between", gap: "14px", padding: "12px 0", borderBottom: `1px solid ${tokens.paperDeep}`, fontFamily: tokens.fontMono, fontSize: "12px", color: tokens.muted, flexWrap: "wrap" }}>
+              <span>{weekK}</span>
+              <span style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+                <span>{vals.pitches_sent || 0} pitches</span>
+                <span>{vals.replies_received || 0} replies</span>
+                <span>{vals.calls_booked || 0} calls</span>
+                <span style={{ color: (vals.revenue || 0) > 0 ? tokens.green : tokens.muted }}>£{vals.revenue || 0}</span>
+              </span>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    function VisionView() {
+      return (
+        <div>
+          <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.muted, marginBottom: "8px" }}>Why you&apos;re doing this</div>
+          <h2 style={{ fontFamily: tokens.fontDisplay, fontSize: "clamp(40px, 6vw, 72px)", fontWeight: 500, lineHeight: 0.95, letterSpacing: "-0.025em", margin: "0 0 32px" }}>£1,000,000.<br /><span style={{ fontStyle: "italic", color: tokens.accent }}>Sustainably.</span></h2>
+          <p style={{ fontFamily: tokens.fontDisplay, fontSize: "20px", lineHeight: 1.55, color: tokens.ink, marginBottom: "40px" }}>Not in 12 months. Not via burnout. Through a consultancy that compounds — clients → testimonials → referrals → higher prices → fewer clients for more money — running alongside a life that includes gigs, the countryside, your boyfriend, and a body you actually move.</p>
+
+          <div style={{ padding: "32px", background: tokens.paperDeep, borderLeft: `3px solid ${tokens.accent}`, marginBottom: "40px" }}>
+            <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.accent, marginBottom: "16px" }}>The map</div>
+            <Stage label="Stage 1" range="£0 → £1k MRR" focus="Outreach. Nothing else." current={true} />
+            <Stage label="Stage 2" range="£1k → £5k MRR" focus="First repeat clients + raise prices." />
+            <Stage label="Stage 3" range="£5k → £15k MRR" focus="Productise. Build a small content layer." />
+            <Stage label="Stage 4" range="£15k → £50k MRR" focus="Hire one. Authority compounds. Doom Pile launches as side bet." />
+            <Stage label="Stage 5" range="£50k+ MRR" focus="The £1M year. Choose: scale agency or scale product." />
+          </div>
+
+          <div style={{ padding: "24px", border: `1px solid ${tokens.ink}`, fontFamily: tokens.fontDisplay, fontSize: "17px", fontStyle: "italic", lineHeight: 1.5 }}>Most founders fail not because they aim too low but because they try to skip stages. Stage 1 looks boring. It is the foundation everything else stands on. Don&apos;t skip it. Don&apos;t dilute it.</div>
+        </div>
+      );
+    }
+
+    function Stage({ label, range, focus, current }) {
+      return (
+        <div className="results-stage-grid" style={{ gridTemplateColumns: "80px 140px 1fr", gap: "16px", padding: "12px 0", borderBottom: "1px solid rgba(14,14,12,0.08)", alignItems: "baseline" }}>
+          <span style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.18em", color: current ? tokens.accent : tokens.muted, fontWeight: current ? 500 : 400 }}>{label} {current && "← you"}</span>
+          <span style={{ fontFamily: tokens.fontMono, fontSize: "12px", color: tokens.ink }}>{range}</span>
+          <span style={{ fontFamily: tokens.fontBody, fontSize: "14px", color: tokens.ink }}>{focus}</span>
+        </div>
+      );
+    }
+
+    function ReviewView({ weeklyReviews, onSubmitReview, locked, onUnlock }) {
+      const [pitches, setPitches] = useState("");
+      const [replies, setReplies] = useState("");
+      const [calls, setCalls] = useState("");
+      const [revenue, setRevenue] = useState("");
+      const [lesson, setLesson] = useState("");
+      const [cut, setCut] = useState("");
+
+      const submit = () => {
+        if (!lesson.trim()) return;
+        onSubmitReview({ weekKey: startOfWeekKey(), submittedAt: Date.now(), pitches: Number(pitches) || 0, replies: Number(replies) || 0, calls: Number(calls) || 0, revenue: Number(revenue) || 0, lesson: lesson.trim(), cut: cut.trim() });
+        setPitches(""); setReplies(""); setCalls(""); setRevenue(""); setLesson(""); setCut("");
+      };
+
+      const isFriday = new Date().getDay() === 5;
+
+      return (
+        <div>
+          <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.muted, marginBottom: "8px" }}>{isFriday ? "Friday — review day" : "Weekly review"}</div>
+          <h2 style={{ fontFamily: tokens.fontDisplay, fontSize: "clamp(32px, 4.5vw, 48px)", fontWeight: 400, lineHeight: 1, letterSpacing: "-0.02em", margin: "0 0 24px", fontStyle: "italic" }}>Three honest questions.</h2>
+          <p style={{ fontFamily: tokens.fontBody, fontSize: "15px", color: tokens.muted, lineHeight: 1.5, marginBottom: "32px" }}>Don&apos;t skip this even if the numbers are bad. Especially if the numbers are bad. The point isn&apos;t to feel good. The point is to know what&apos;s actually happening.</p>
+          {locked ? (
+            <LockedPanel
+              title="Weekly reviews are part of the paid curriculum."
+              body="The free preview shows how Results OS thinks. The full unlock gives you the repeatable review loop, saved patterns, and course-correction habit."
+              cta="Unlock the 21-day curriculum"
+              onUnlock={onUnlock}
+            />
+          ) : (
+            <>
+              <div style={{ display: "grid", gap: "20px", marginBottom: "32px" }}>
+                <NumGrid pitches={pitches} setPitches={setPitches} replies={replies} setReplies={setReplies} calls={calls} setCalls={setCalls} revenue={revenue} setRevenue={setRevenue} />
+                <ReviewQ q="What&apos;s the ONE thing that worked this week?" value={lesson} onChange={setLesson} placeholder="One sentence. The thing you'd do more of." />
+                <ReviewQ q="What&apos;s the ONE thing you'd cut?" value={cut} onChange={setCut} placeholder="One sentence. The thing that ate time but didn't pay." />
+              </div>
+              <button onClick={submit} disabled={!lesson.trim()} style={{ width: "100%", padding: "18px 24px", background: tokens.ink, color: tokens.paper, border: "none", fontFamily: tokens.fontMono, fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", cursor: lesson.trim() ? "pointer" : "not-allowed", opacity: lesson.trim() ? 1 : 0.4 }}>Save weekly review</button>
+            </>
+          )}
+          {!locked && weeklyReviews.length > 0 && (
+            <div style={{ marginTop: "56px" }}>
+              <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.20em", textTransform: "uppercase", color: tokens.muted, marginBottom: "16px" }}>Past reviews — your real pattern</div>
+              {weeklyReviews.map((r, i) => (
+                <div key={i} style={{ padding: "20px 0", borderBottom: `1px solid ${tokens.paperDeep}` }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", fontFamily: tokens.fontMono, fontSize: "11px", color: tokens.muted, marginBottom: "10px", flexWrap: "wrap" }}>
+                    <span>{r.weekKey}</span>
+                    <span style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+                      <span>{r.pitches}p</span><span>{r.replies}r</span><span>{r.calls}c</span><span style={{ color: r.revenue > 0 ? tokens.green : tokens.muted }}>£{r.revenue}</span>
+                    </span>
+                  </div>
+                  {r.lesson && <div style={{ fontFamily: tokens.fontDisplay, fontSize: "16px", fontStyle: "italic", color: tokens.ink, marginBottom: "6px" }}>↑ {r.lesson}</div>}
+                  {r.cut && <div style={{ fontFamily: tokens.fontBody, fontSize: "14px", color: tokens.muted, textDecoration: "line-through", textDecorationColor: tokens.accent }}>✕ {r.cut}</div>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function LockedCurriculumView({ currentDay, onUnlock }) {
+      return (
+        <LockedPanel
+          title={`Day ${currentDay} is locked until Results OS is unlocked.`}
+          body={`The free preview includes days 1-${RESULTS_OS_PREVIEW_DAYS}. Unlock to access the remaining curriculum, the full coaching sequence, review loop, metrics system, and dopamine trap.`}
+          cta="Unlock full 21-day curriculum"
+          onUnlock={onUnlock}
+        />
+      );
+    }
+
+    function LockedPanel({ title, body, cta, onUnlock }) {
+      return (
+        <div style={{ padding: "34px", border: `1px solid ${tokens.paperDeep}`, background: "linear-gradient(135deg, rgba(255,255,255,0.6), rgba(234,229,218,0.92))" }}>
+          <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", color: tokens.accent, marginBottom: "12px" }}>
+            Paid unlock
+          </div>
+          <h2 style={{ fontFamily: tokens.fontDisplay, fontSize: "clamp(28px, 5vw, 42px)", lineHeight: 1, margin: "0 0 14px", fontWeight: 500 }}>
+            {title}
+          </h2>
+          <p style={{ fontFamily: tokens.fontBody, fontSize: "15px", lineHeight: 1.65, color: tokens.muted, margin: "0 0 22px" }}>
+            {body}
+          </p>
+          <button onClick={onUnlock} style={{ padding: "16px 22px", background: tokens.ink, color: tokens.paper, border: "none", fontFamily: tokens.fontMono, fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase", cursor: "pointer" }}>
+            {cta}
+          </button>
+        </div>
+      );
+    }
+
+    function NumGrid({ pitches, setPitches, replies, setReplies, calls, setCalls, revenue, setRevenue }) {
+      const fields = [
+        { label: "Pitches sent", val: pitches, set: setPitches },
+        { label: "Replies", val: replies, set: setReplies },
+        { label: "Calls", val: calls, set: setCalls },
+        { label: "Revenue (£)", val: revenue, set: setRevenue },
+      ];
+      return (
+        <div className="results-review-stats" style={{ gridTemplateColumns: "repeat(2, 1fr)", gap: "16px" }}>
+          {fields.map((f) => (
+            <div key={f.label}>
+              <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase", color: tokens.muted, marginBottom: "6px" }}>{f.label}</div>
+              <input type="number" value={f.val} onChange={(e) => f.set(e.target.value)} placeholder="0" style={{ width: "100%", fontFamily: tokens.fontDisplay, fontSize: "32px", fontWeight: 500, border: "none", borderBottom: `1px solid ${tokens.ink}`, background: "transparent", padding: "8px 0", outline: "none", color: tokens.ink }} />
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    function ReviewQ({ q, value, onChange, placeholder }) {
+      return (
+        <div>
+          <div style={{ fontFamily: tokens.fontDisplay, fontSize: "18px", fontWeight: 500, marginBottom: "10px", color: tokens.ink }}>{q}</div>
+          <textarea value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} rows={2} style={textareaStyle} />
+        </div>
+      );
+    }
+
+    function DopamineTrapModal({ open, onClose, onPark, parkedIdeas, currentTask }) {
+      const [step, setStep] = useState("idea");
+      const [idea, setIdea] = useState("");
+      const [a1, setA1] = useState(null);
+      const [a2, setA2] = useState(null);
+      const [a3, setA3] = useState(null);
+
+      useEffect(() => {
+        if (!open) return;
+        setStep("idea"); setIdea(""); setA1(null); setA2(null); setA3(null);
+      }, [open]);
+
+      if (!open) return null;
+
+      const dopamineScore = [a1 === false, a2 === false, a3 === false].filter(Boolean).length;
+      const verdict = dopamineScore >= 2
+        ? { tone: "stop", title: "This is your dopamine talking.", body: "Park it. Don't act. Get back to today's actual task." }
+        : dopamineScore === 1
+        ? { tone: "wait", title: "Maybe later, not now.", body: "Park it. Revisit next week. If it still feels worth it, we'll talk." }
+        : { tone: "ok", title: "This might be strategic.", body: "Still don't act today. Bring it to the next coaching session and we'll decide together." };
+
+      const finalize = () => {
+        onPark({ text: idea, at: Date.now(), verdict: verdict.tone, dopamine_score: dopamineScore });
+        onClose();
+      };
+
+      return (
+        <div onClick={onClose} style={modalOverlay}>
+          <div onClick={(e) => e.stopPropagation()} style={modalCard}>
+            <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.accent, marginBottom: "8px" }}>Dopamine trap</div>
+            {step === "idea" && (
+              <>
+                <h3 style={modalTitle}>What&apos;s the new idea?</h3>
+                <p style={{ fontFamily: tokens.fontBody, fontSize: "14px", color: tokens.muted, lineHeight: 1.5, marginBottom: "20px" }}>Three quick questions before you act on it. This stops good ideas from becoming expensive distractions.</p>
+                <textarea value={idea} onChange={(e) => setIdea(e.target.value)} placeholder="The idea, in one sentence..." rows={3} style={textareaStyle} />
+                <div style={{ marginTop: "20px" }}><button onClick={() => setStep("q1")} disabled={!idea.trim()} style={primaryBtn(!idea.trim())}>Next</button></div>
+              </>
+            )}
+            {step === "q1" && <TrapQ n="01" q="Will this make you money in the next 90 days?" onYes={() => { setA1(true); setStep("q2"); }} onNo={() => { setA1(false); setStep("q2"); }} />}
+            {step === "q2" && <TrapQ n="02" q="Does it serve the offer you're already trying to sell (SJK Labs)?" onYes={() => { setA2(true); setStep("q3"); }} onNo={() => { setA2(false); setStep("q3"); }} />}
+            {step === "q3" && <TrapQ n="03" q="Honestly — is this your strategic brain or your dopamine brain?" yesLabel="Strategic" noLabel="Dopamine" onYes={() => { setA3(true); setStep("verdict"); }} onNo={() => { setA3(false); setStep("verdict"); }} />}
+            {step === "verdict" && (
+              <>
+                <h3 style={{ ...modalTitle, color: verdict.tone === "stop" ? tokens.accent : verdict.tone === "wait" ? tokens.ink : tokens.green }}>{verdict.title}</h3>
+                <p style={{ fontFamily: tokens.fontDisplay, fontSize: "18px", lineHeight: 1.5, marginBottom: "28px" }}>{verdict.body}</p>
+                {currentTask && <div style={{ padding: "20px", background: tokens.ink, color: tokens.paper, marginBottom: "28px" }}><div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.20em", textTransform: "uppercase", color: tokens.accent, marginBottom: "10px" }}>Get back to</div><div style={{ fontFamily: tokens.fontDisplay, fontSize: "18px", lineHeight: 1.4 }}>{currentTask}</div></div>}
+                <button onClick={finalize} style={primaryBtn(false)}>Park the idea & close</button>
+              </>
+            )}
+            {parkedIdeas.length > 0 && step === "idea" && (
+              <details style={{ marginTop: "32px" }}>
+                <summary style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.20em", textTransform: "uppercase", color: tokens.muted, cursor: "pointer", listStyle: "none" }}>{parkedIdeas.length} idea{parkedIdeas.length > 1 ? "s" : ""} parked so far</summary>
+                <div style={{ marginTop: "12px" }}>
+                  {parkedIdeas.slice(0, 10).map((p, i) => (
+                    <div key={i} style={{ padding: "10px 0", borderBottom: `1px solid ${tokens.paperDeep}`, fontFamily: tokens.fontBody, fontSize: "13px", color: tokens.muted, display: "flex", justifyContent: "space-between", gap: "12px" }}>
+                      <span style={{ flex: 1 }}>{p.text}</span>
+                      <span style={{ fontFamily: tokens.fontMono, fontSize: "10px", color: p.verdict === "stop" ? tokens.accent : p.verdict === "wait" ? tokens.muted : tokens.green, flexShrink: 0 }}>{p.verdict}</span>
+                    </div>
+                  ))}
+                </div>
+              </details>
+            )}
+            <button onClick={onClose} style={{ marginTop: "24px", background: "transparent", border: "none", fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.20em", textTransform: "uppercase", color: tokens.muted, cursor: "pointer", padding: 0 }}>Close</button>
+          </div>
+        </div>
+      );
+    }
+
+    function TrapQ({ n, q, onYes, onNo, yesLabel = "Yes", noLabel = "No" }) {
+      return (
+        <>
+          <div style={{ fontFamily: tokens.fontMono, fontSize: "11px", letterSpacing: "0.18em", color: tokens.accent, marginBottom: "16px" }}>Question {n} / 03</div>
+          <h3 style={{ fontFamily: tokens.fontDisplay, fontSize: "26px", lineHeight: 1.25, margin: "0 0 32px", fontWeight: 500 }}>{q}</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+            <button onClick={onYes} style={primaryBtn(false)}>{yesLabel}</button>
+            <button onClick={onNo} style={{ ...primaryBtn(false), background: "transparent", color: tokens.ink, border: `1px solid ${tokens.ink}` }}>{noLabel}</button>
+          </div>
+        </>
+      );
+    }
+
+    function LogModal({ open, onClose, log, onAdd }) {
+      const [did, setDid] = useState("");
+      const [avoided, setAvoided] = useState("");
+      if (!open) return null;
+
+      const submit = () => {
+        if (!did.trim() && !avoided.trim()) return;
+        onAdd({ date: todayKey(), at: Date.now(), what_i_did: did.trim(), what_i_avoided: avoided.trim() });
+        setDid(""); setAvoided(""); onClose();
+      };
+
+      return (
+        <div onClick={onClose} style={modalOverlay}>
+          <div onClick={(e) => e.stopPropagation()} style={modalCard}>
+            <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.muted, marginBottom: "8px" }}>Honesty log · {todayKey()}</div>
+            <h3 style={modalTitle}>What actually happened?</h3>
+            <div style={{ marginBottom: "20px" }}>
+              <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase", color: tokens.green, marginBottom: "8px" }}>What I did</div>
+              <textarea value={did} onChange={(e) => setDid(e.target.value)} placeholder="The actual actions, not the planned ones." rows={3} style={textareaStyle} />
+            </div>
+            <div style={{ marginBottom: "24px" }}>
+              <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase", color: tokens.accent, marginBottom: "8px" }}>What I avoided</div>
+              <textarea value={avoided} onChange={(e) => setAvoided(e.target.value)} placeholder="The honest part. What did you put off, and why." rows={3} style={textareaStyle} />
+            </div>
+            <button onClick={submit} style={primaryBtn(false)}>Log it</button>
+            {log.length > 0 && (
+              <details style={{ marginTop: "32px" }}>
+                <summary style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.20em", textTransform: "uppercase", color: tokens.muted, cursor: "pointer", listStyle: "none" }}>Past entries ({log.length})</summary>
+                <div style={{ marginTop: "16px" }}>
+                  {log.slice(0, 10).map((e, i) => (
+                    <div key={i} style={{ padding: "12px 0", borderBottom: `1px solid ${tokens.paperDeep}` }}>
+                      <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", color: tokens.muted, marginBottom: "4px" }}>{e.date}</div>
+                      {e.what_i_did && <div style={{ fontFamily: tokens.fontBody, fontSize: "14px", color: tokens.ink, marginBottom: "4px" }}>✓ {e.what_i_did}</div>}
+                      {e.what_i_avoided && <div style={{ fontFamily: tokens.fontBody, fontSize: "14px", color: tokens.muted, fontStyle: "italic" }}>✕ {e.what_i_avoided}</div>}
+                    </div>
+                  ))}
+                </div>
+              </details>
+            )}
+            <button onClick={onClose} style={{ marginTop: "20px", background: "transparent", border: "none", fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.20em", textTransform: "uppercase", color: tokens.muted, cursor: "pointer", padding: 0 }}>Close</button>
+          </div>
+        </div>
+      );
+    }
+
+    function UnlockResultsModal({ open, onClose, onUnlock }) {
+      const [code, setCode] = useState("");
+      const [error, setError] = useState("");
+
+      useEffect(() => {
+        if (!open) {
+          setCode("");
+          setError("");
+        }
+      }, [open]);
+
+      if (!open) return null;
+
+      const submitCode = () => {
+        const normalized = code.trim();
+        if (normalized === RESULTS_OS_UNLOCK_CODE || normalized === RESULTS_OS_UNLOCK_CODE_LEGACY) {
+          onUnlock();
+          return;
+        }
+        setError("That code didn't work. Try again.");
+      };
+
+      return (
+        <div onClick={onClose} style={modalOverlay}>
+          <div onClick={(e) => e.stopPropagation()} style={modalCard}>
+            <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.accent, marginBottom: "8px" }}>
+              Unlock Results OS
+            </div>
+            <h3 style={modalTitle}>Free preview first. Pay to unlock all 21 days.</h3>
+            <p style={{ fontFamily: tokens.fontBody, fontSize: "14px", color: tokens.muted, lineHeight: 1.6, marginBottom: "24px" }}>
+              Preview the opening days for free. The paid unlock gives access to the full curriculum, the weekly review loop, the saved metrics system, and the locked coaching tools.
+            </p>
+
+            <a href={RESULTS_OS_CHECKOUT_URL} target="_blank" rel="noreferrer" style={{ display: "block", textDecoration: "none", marginBottom: "24px" }}>
+              <div style={{ padding: "16px 18px", background: tokens.ink, color: tokens.paper, textAlign: "center", fontFamily: tokens.fontMono, fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase" }}>
+                Buy unlock →
+              </div>
+            </a>
+
+            <div style={{ marginBottom: "10px", fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase", color: tokens.muted }}>
+              Already bought it?
+            </div>
+            <input
+              type="password"
+              value={code}
+              onChange={(e) => {
+                setCode(e.target.value);
+                if (error) setError("");
+              }}
+              onKeyDown={(e) => e.key === "Enter" && submitCode()}
+              placeholder="Enter your Results OS code"
+              style={{ width: "100%", background: "rgba(255,255,255,0.72)", border: `1px solid ${tokens.paperDeep}`, color: tokens.ink, fontFamily: tokens.fontMono, fontSize: "14px", padding: "14px 16px", outline: "none", marginBottom: "12px" }}
+            />
+            <button onClick={submitCode} style={primaryBtn(false)}>
+              Unlock with code
+            </button>
+            {error && <div style={{ marginTop: "12px", color: tokens.accent, fontSize: "13px" }}>{error}</div>}
+
+            <button onClick={onClose} style={{ marginTop: "20px", background: "transparent", border: "none", fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.20em", textTransform: "uppercase", color: tokens.muted, cursor: "pointer", padding: 0 }}>
+              Close
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    const primaryBtn = (disabled) => ({
+      padding: "16px 24px",
+      background: tokens.ink,
+      color: tokens.paper,
+      border: "none",
+      fontFamily: tokens.fontMono,
+      fontSize: "11px",
+      letterSpacing: "0.2em",
+      textTransform: "uppercase",
+      cursor: disabled ? "not-allowed" : "pointer",
+      opacity: disabled ? 0.4 : 1,
+      width: "100%",
+    });
+
+    const textareaStyle = {
+      width: "100%",
+      fontFamily: tokens.fontBody,
+      fontSize: "15px",
+      background: tokens.paperDeep,
+      border: "none",
+      borderLeft: `2px solid ${tokens.ink}`,
+      padding: "12px 16px",
+      outline: "none",
+      resize: "vertical",
+      color: tokens.ink,
+      lineHeight: 1.5,
+    };
+
+    const modalOverlay = {
+      position: "fixed",
+      inset: 0,
+      background: "rgba(14,14,12,0.85)",
+      zIndex: 50,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "24px",
+    };
+
+    const modalCard = {
+      background: tokens.paper,
+      maxWidth: "560px",
+      width: "100%",
+      padding: "40px",
+      maxHeight: "85vh",
+      overflowY: "auto",
+    };
+
+    const modalTitle = {
+      fontFamily: tokens.fontDisplay,
+      fontSize: "30px",
+      fontStyle: "italic",
+      margin: "0 0 16px",
+      fontWeight: 400,
+    };
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<ResultsOS />);
+  </script>
+</body>
+</html>
