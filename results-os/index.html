@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive">
   <meta
     name="description"
-    content="Results OS is a business planning dashboard with daily prompts, weekly numbers, reviews, and a trap for shiny new ideas."
+    content="Results OS is a stay-on-track dashboard with daily prompts, weekly reviews, and a trap for shiny new ideas."
   >
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -92,10 +92,11 @@
     const RESULTS_OS_CHECKOUT_URL = "https://buy.stripe.com/5kQfZj7HZgZSawwbnZcQU0g";
     const DEFAULT_PROFILE = {
       firstName: "",
-      offerName: "",
-      targetRevenue: 1000000,
-      successVision: "Build a business that compounds without burnout.",
-      currentFocus: "Turn outreach into revenue.",
+      goalName: "",
+      goalDeadline: "",
+      successVision: "I finish what matters before I let new ideas take over.",
+      currentFocus: "Protect time for the next concrete step.",
+      consistencyTarget: 5,
     };
 
     function loadState() {
@@ -132,34 +133,34 @@
     }
 
     const STAGE_1_PROMPTS = [
-      { day: 1, title: "The £0 truth", body: "You haven't been paid yet. That's the only fact that matters. Every business idea you have right now is theoretical until someone wires you money. Today's question isn't 'what should I build' — it's 'who has a problem I can solve this week, who has a budget?'", today: "Make a list of 30 specific people you could pitch {{offerName}} to. Names. Companies. Why they'd care. Do not stop at 10. The list itself is the asset.", why: "At £0, the constraint is never strategy. It's volume of specific, named conversations." },
-      { day: 2, title: "Pitch one. Today.", body: "Yesterday you made a list. Today you pitch one person on it. Not the easiest. Not the hardest. The one most likely to say 'tell me more' within 48 hours.", today: "Send ONE pitch email. Reference something specific about them. Make one clear ask: a 20-min call this week.", why: "First sent email is the hardest. After that they get easier. Volume comes from removing emotional weight, not adding effort." },
-      { day: 3, title: "The dopamine you'll feel today", body: "By now you'll want to redesign your website, write a blog post, or have a 'quick idea' for a new offer. That's your brain trying to escape the discomfort of waiting for replies. Don't follow it.", today: "Send THREE more pitch emails. Same template, different specifics. No new project starts today.", why: "Your weakness is not lack of ideas. It's chasing the next idea before the current one has been tested with real money." },
-      { day: 4, title: "What 'pitching' actually means", body: "Most pitches fail not because the offer is bad but because the email assumes the reader cares. They don't. They have 200 unread emails. Your job: be the one that's clearly about THEM, in the first sentence.", today: "Look at yesterday's three emails. Rewrite the subject line + first sentence of each to lead with the recipient, not you. Send three more today, the new way.", why: "Conversion at £0 is mostly a copy problem dressed as a pipeline problem." },
-      { day: 5, title: "Friday: the truth check", body: "It's Friday. This week you sent pitches. How many got replies? How many turned into calls? If the answer is zero, that's information, not failure.", today: "Count. Write down: pitches sent, replies received, calls booked. No analysis yet. Just numbers.", why: "You can't fix what you don't measure. But you can also avoid measuring as a way of avoiding the truth." },
-      { day: 6, title: "Rest day — but with one rule", body: "Take the weekend. See people you love. Move your body. Leave the desk. The work compounds when you stop too. But: no 'quick' new business ideas in the Notes app. If one comes, capture it in the Idea Trap and let it die there.", today: "Rest. Move your body. Don't open the laptop for 'just one thing'.", why: "People burn out by treating weekends as catch-up days. The catch-up never catches up." },
-      { day: 7, title: "Sunday: the planning trap", body: "Today you'll feel the urge to redesign next week. Resist. The plan is: send more pitches, follow up on last week's, take the calls you booked. That's it. Don't add a content schedule. Don't add Doom Pile. Don't.", today: "Re-read last week's pitches. Pick the 5 that didn't reply. Draft follow-ups for tomorrow.", why: "Replanning is a respectable form of procrastination. It feels productive because it's strategic. It isn't." },
-      { day: 8, title: "Follow up. The money is in the follow-up.", body: "80% of replies come from follow-ups, not first emails. Most people stop because it feels needy. It isn't. It's professional. It says: I noticed you didn't reply, here's another reason this matters.", today: "Send 5 follow-up emails. Each one references a specific thing about their business that's relevant THIS WEEK. Not 'just bumping this'.", why: "First emails get 5-15% reply rates. Follow-ups push it to 25-40%. You're leaving a lot of your pipeline on the table by not following up." },
-      { day: 9, title: "If you've had a call by now", body: "If you've had any reply, any call, any glimmer — that's the proof you needed that this works. If you haven't yet, your list isn't long enough or your copy isn't sharp enough. Both are fixable today.", today: "Either: prep for an upcoming call (write down the one outcome you want from it), or: send 5 more cold pitches with a new angle.", why: "Pre-call prep is the highest-leverage 30 minutes you can spend at £0. A booked call is a fragile thing. Don't waste it." },
-      { day: 10, title: "The price problem", body: "When someone says yes to a call, your brain will say 'charge less'. Don't. At £0 your job isn't to find the cheapest yes — it's to find proof that someone will pay a real price for what you do.", today: "Decide your starter price for {{offerName}}. Write it down. £X for Y deliverable in Z weeks. One number. Don't change it for the first 3 prospects.", why: "Pricing instability is what keeps people stuck at £0. Prospects can smell uncertainty. Pick a number and hold it." },
-      { day: 11, title: "What 'closing' actually is", body: "Closing isn't pressure. It's clarity. Most deals die because the person selling leaves the call without a clear next step + date. 'I'll send you a proposal sometime' is how £0 stays £0.", today: "If you have a call this week, end it with: 'I'll send a one-page proposal by [day], can we book a 15-min decision call for [day]?' Both dates. Booked.", why: "The gap between call and contract is where many deals die. Close the gap with calendar slots, not promises." },
-      { day: 12, title: "The shiny thing test", body: "By day 12 you'll have a new business idea. You always do. It will feel urgent. It will feel like the breakthrough. It is not.", today: "If a new idea has appeared, write it in the Idea Trap. Do not act on it. Re-read your longer-term vision. Continue the outreach you've already started.", why: "New ideas at the wrong stage are sabotage. Your brain offers them precisely when the current path requires uncomfortable patience." },
-      { day: 13, title: "The boring middle", body: "Two weeks in, this is where most people quit. Replies are slow. Doubts creep in. The thrill of starting has worn off. This is not failure — this is the actual texture of building something. It's mostly boring.", today: "Send 5 more pitches. Follow up on 5 old ones. That's it. The boring part is the work.", why: "Survivorship bias makes successful businesses look exciting. The reality is they did this exact boring thing for years." },
-      { day: 14, title: "Week 2 truth check", body: "Same as Friday week 1. Pitches sent, replies, calls. If the numbers are flat, your list or your copy needs work. If they're growing, keep doing what you're doing for another 2 weeks before changing anything.", today: "Numbers only. No interpretation. Just counts.", why: "Two data points is a trend. One is a story you're telling yourself." },
-      { day: 15, title: "When to charge for a small test", body: "If you have a warm prospect who's hedging, offer a small paid test — 2 weeks, £500-£1500, clear deliverable. Not free. Never free. Free creates wrong expectations.", today: "If you have a hedging prospect, send them a short paid test proposal. One page. Three sections: what, when, how much.", why: "Free work signals you're not sure. A small paid test signals confidence and gives them a low-risk yes." },
-      { day: 16, title: "Visibility ≠ revenue", body: "You'll be tempted to post on LinkedIn instead of pitching. Posting feels like work but at £0 it almost never produces revenue inside 30 days. Pitching does.", today: "If you must post, post AFTER you've sent your pitches and follow-ups for the day. Outreach is the verb that pays. Posts are the verb that comforts.", why: "At £0, content is for after you have proof. Before proof, content is procrastination dressed as marketing." },
-      { day: 17, title: "Your unfair advantage", body: "You have one advantage most people underuse: you understand your work more deeply than anyone else in the room. Use it. Pitches that show you've actually read someone's work convert better than generic templates.", today: "Pick 3 prospects. Spend 15 min on each reading their actual writing/work. Pitch with a specific reference. Send all three.", why: "Personalisation that's actually personal compounds. Mail-merge templates don't." },
-      { day: 18, title: "If you haven't booked a call yet", body: "Three weeks in, no calls means one of two things: list quality is wrong (these aren't decision-makers, or they don't have budget), or copy is wrong. It's almost never the offer at this stage.", today: "Audit your list. Cross off anyone who isn't a decision-maker with a budget. Add 10 new ones who are. Pitch 5 of the new ones today.", why: "Pitching the wrong people perfectly still gets you nothing. Right people, average copy, beats wrong people, perfect copy." },
-      { day: 19, title: "The first yes", body: "When you get your first yes, your brain will want to celebrate by starting three new things. Don't. Deliver. Over-deliver. Get proof. Get an example. Get a referral. That one early customer is now your most important asset for the next 6 months.", today: "If you've had a yes: send the agreement today. If you haven't: pitch 5 more.", why: "Early sales aren't just revenue. They're proof. Treat them like the strategic asset they are, not just the deal." },
-      { day: 20, title: "Compounding starts now", body: "One paying customer → proof → the next pitch is easier → better examples → referrals. This is how traction compounds. There's no shortcut.", today: "Whatever stage you're at: pitch 3, follow up 3, prep for any call you have. Do it without drama.", why: "Boredom of consistency is the price of compounding. Most people quit just before it kicks in." },
-      { day: 21, title: "Three week review", body: "Three weeks. Look at what you did, not what you planned. How many pitches? How many replies? How many calls? Any money? This is your real baseline. Now we plan the next three weeks based on what actually moved.", today: "Open the Honesty Log. Read it back. Write down the numbers and decide the next 21 days from the evidence, not the mood.", why: "Cycles of 21 days are long enough to see real patterns and short enough to course-correct before too much sunk cost." },
+      { day: 1, title: "Pick the thing", body: "You do not need a better idea. You need one goal that matters enough to survive your mood swings. For the next 21 days, {{goalName}} is the thing. Everything else is background noise.", today: "Write your goal in one plain sentence. Then write the next visible step you can do for {{goalName}} this week.", why: "Clarity removes wiggle room. A vague goal is where dopamine slips in." },
+      { day: 2, title: "Shrink the mountain", body: "Brains that chase novelty often make goals too big to start. Your job is to make {{goalName}} embarrassingly actionable.", today: "Break {{goalName}} into 3 tiny moves. Pick the first one and put 30 minutes aside for it today.", why: "Small, visible progress beats dramatic planning every time." },
+      { day: 3, title: "Catch the escape route", body: "Today your brain will offer a more exciting route. New notebook. New system. New side mission. That is not insight. That is avoidance wearing good shoes.", today: "Use the Idea Trap for every new idea today. Do not switch goals. Finish the next step you already chose.", why: "The right path often feels boring before it feels rewarding." },
+      { day: 4, title: "Make friction work for you", body: "If starting is hard, the setup is wrong. Reduce the steps between you and the work.", today: "Set up your space, file, tab, notes, or materials so tomorrow's first step takes less than two minutes to begin.", why: "Ease matters. We protect focus by lowering the cost of re-entry." },
+      { day: 5, title: "Truth check", body: "At the end of the week, the only useful question is: did you do the work you said mattered?", today: "Count your week so far. Focus blocks. Days on track. Ideas parked. Distractions dodged. Just the numbers.", why: "Measurement turns vague guilt into something you can actually steer." },
+      { day: 6, title: "Rest without drifting", body: "Rest matters. So does not turning rest into a soft launch for three new plans.", today: "Take a proper break. If a shiny idea appears, park it and go back to resting instead of researching it.", why: "Recovery is useful. Accidental re-planning is not." },
+      { day: 7, title: "Plan the next seven", body: "Do not redesign your life. Just make next week easier to follow than this one.", today: "Choose the 3 most important moves for {{goalName}} next week and decide when each one will happen.", why: "Simple plans survive real life better than ambitious ones." },
+      { day: 8, title: "Re-enter fast", body: "Week two starts with resistance. Expect it. Start anyway.", today: "Do the smallest useful step on {{goalName}} before you check messages, browse, or tidy something that does not matter.", why: "Your first win of the day sets the tone for the rest of it." },
+      { day: 9, title: "Protect the block", body: "Attention leaks before it breaks. Every interruption teaches your brain that the goal is optional.", today: "Create one protected focus block today. Phone away. Tabs closed. One task only.", why: "Depth does not happen by accident." },
+      { day: 10, title: "When you feel behind", body: "Feeling behind makes people either quit or start something new. Both are traps.", today: "Write down what 'enough for today' looks like on {{goalName}}. Do that first. Stop bargaining for a more exciting plan.", why: "A smaller completed step beats a bigger imagined recovery." },
+      { day: 11, title: "Notice what you avoid", body: "The sticky bit is usually the real work. That is why your brain keeps decorating the edges instead.", today: "Name the bit of {{goalName}} you've been skirting around. Spend 20 minutes on that exact part.", why: "Progress often lives inside the task you least want to touch." },
+      { day: 12, title: "The shiny thing test", body: "A fresh idea can feel like relief because it lets you stop being uncomfortable on the current path.", today: "If a new plan appears, send it to the Idea Trap. Then return to the current focus: {{currentFocus}}.", why: "Not all ideas are bad. Most just do not belong to today." },
+      { day: 13, title: "Boring is not broken", body: "The middle of anything meaningful is repetitive. That does not mean it is wrong.", today: "Repeat the habit that has helped most this week. Same time, same setup, same next move.", why: "Consistency looks dull from the outside and powerful in hindsight." },
+      { day: 14, title: "Week two review", body: "Do not rate the week by vibes. Rate it by evidence.", today: "Check your numbers again. Then write one sentence: what actually helped you stay on track?", why: "Patterns beat feelings when you are trying to change behaviour." },
+      { day: 15, title: "Tighten the goal", body: "If {{goalName}} still feels slippery, it may need clearer edges rather than more motivation.", today: "Rewrite your goal so it is specific enough to know what counts as progress this week.", why: "Specific goals are easier to defend from distractions." },
+      { day: 16, title: "Delay the detour", body: "You do not have to kill every idea. You just have to stop letting it hijack today.", today: "Choose one tempting detour you will deliberately delay for seven days. Write it down and leave it parked.", why: "Delay is often enough to expose a false urgency." },
+      { day: 17, title: "Use proof, not panic", body: "You already have evidence about what helps you move. Use that instead of trying to rescue the week with intensity.", today: "Repeat your best focus setup from the last two weeks and complete one full block on {{goalName}}.", why: "Reliable conditions matter more than motivational speeches." },
+      { day: 18, title: "Reduce the choice load", body: "Too many options make distraction easier. Decide fewer things in the moment.", today: "Pick tomorrow's first task for {{goalName}} before you finish today. Leave a visible note for yourself.", why: "Pre-deciding keeps tomorrow's brain from wandering off." },
+      { day: 19, title: "Stay with it after a win", body: "A little progress often triggers a celebration spiral: new plans, new tabs, new ambition. Hold the line.", today: "If you made progress, do not expand the scope. Record the win, then keep the next step small and obvious.", why: "Momentum grows when you protect it from your own excitement." },
+      { day: 20, title: "Finish the loop", body: "By now you know which distractions keep showing up. Stop acting surprised by them.", today: "Write down the top 3 ways you abandon {{goalName}}. For each one, choose one tiny counter-move.", why: "Self-awareness becomes useful when it changes the environment." },
+      { day: 21, title: "Three-week reset", body: "Look at what you actually did across 21 days. Not the fantasy version. Not the guilty version. The real one.", today: "Read your honesty log, your parked ideas, and your numbers. Decide what stays, what goes, and what the next 21 days are really about.", why: "A real reset comes from evidence, not a dramatic new promise." },
     ];
 
     const STAGE_1_METRICS = [
-      { key: "pitches_sent", label: "Pitches sent", target_per_week: 15 },
-      { key: "replies_received", label: "Replies received", target_per_week: 3 },
-      { key: "calls_booked", label: "Calls booked", target_per_week: 2 },
-      { key: "revenue", label: "Revenue (£)", target_per_week: 0, isMoney: true },
+      { key: "focus_blocks", label: "Focus blocks", target_per_week: 10 },
+      { key: "days_on_track", label: "Days on track", target_per_week: 5 },
+      { key: "ideas_parked", label: "Ideas parked", target_per_week: 3 },
+      { key: "distractions_resisted", label: "Distractions resisted", target_per_week: 7 },
     ];
 
     function todayKey() {
@@ -180,17 +181,14 @@
     }
 
     function personalizeText(text, profile) {
-      const offerName = profile.offerName?.trim() || "your offer";
-      return text.replaceAll("{{offerName}}", offerName);
-    }
+      const replacements = {
+        "{{goalName}}": profile.goalName?.trim() || "your goal",
+        "{{currentFocus}}": profile.currentFocus?.trim() || DEFAULT_PROFILE.currentFocus,
+        "{{goalDeadline}}": profile.goalDeadline?.trim() || "your deadline",
+        "{{successVision}}": profile.successVision?.trim() || DEFAULT_PROFILE.successVision,
+      };
 
-    function formatCurrencyGoal(value) {
-      const amount = Number(value) || 0;
-      return new Intl.NumberFormat("en-GB", {
-        style: "currency",
-        currency: "GBP",
-        maximumFractionDigits: 0,
-      }).format(amount);
+      return Object.entries(replacements).reduce((result, [token, value]) => result.replaceAll(token, value), text);
     }
 
     function ResultsOS() {
@@ -204,8 +202,7 @@
         parkedIdeas: [],
         log: [],
         weeklyReviews: [],
-        revenueTotal: 0,
-        firstClientDate: null,
+        focusBlocksTotal: 0,
       });
       const [view, setView] = useState("today");
       const [trapOpen, setTrapOpen] = useState(false);
@@ -251,7 +248,7 @@
       const previewLocked = !isUnlocked && state.currentDay > RESULTS_OS_PREVIEW_DAYS;
       const previewDaysLeft = Math.max(0, RESULTS_OS_PREVIEW_DAYS - state.currentDay + 1);
       const profile = { ...DEFAULT_PROFILE, ...(state.profile || {}) };
-      const hasProfile = Boolean(profile.offerName.trim());
+      const hasProfile = Boolean(profile.goalName.trim());
       const personalizedPrompt = {
         ...todayPrompt,
         body: personalizeText(todayPrompt.body, profile),
@@ -295,9 +292,9 @@
 
           <div style={{ maxWidth: "980px", margin: "0 auto", padding: "20px 28px 0" }}>
             <div style={{ padding: "28px", background: "linear-gradient(135deg, rgba(255,255,255,0.55), rgba(239,232,218,0.95))", border: `1px solid ${tokens.paperDeep}`, marginBottom: "18px" }}>
-              <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.accent, marginBottom: "10px" }}>Business mode</div>
-              <h1 style={{ fontFamily: tokens.fontDisplay, fontSize: "clamp(34px, 6vw, 58px)", lineHeight: 0.96, letterSpacing: "-0.03em", margin: "0 0 14px", fontWeight: 500 }}>A planning dashboard for <span style={{ fontStyle: "italic" }}>your own objectives.</span></h1>
-              <p style={{ maxWidth: "46rem", margin: 0, fontSize: "16px", color: tokens.muted, lineHeight: 1.65 }}>Results OS is for the days when strategy turns into avoidance. Set your own offer, focus and revenue target, then let the curriculum keep you on the path that actually moves money.</p>
+              <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.accent, marginBottom: "10px" }}>Stay on track mode</div>
+              <h1 style={{ fontFamily: tokens.fontDisplay, fontSize: "clamp(34px, 6vw, 58px)", lineHeight: 0.96, letterSpacing: "-0.03em", margin: "0 0 14px", fontWeight: 500 }}>A 21-day system for <span style={{ fontStyle: "italic" }}>finishing what matters.</span></h1>
+              <p style={{ maxWidth: "46rem", margin: 0, fontSize: "16px", color: tokens.muted, lineHeight: 1.65 }}>Results OS is for the days when a fresh idea threatens to pull you off course. Set one real goal, define the next move, and let the tool keep steering you back to the work.</p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginTop: "18px" }}>
                 <div style={{ padding: "8px 12px", border: `1px solid ${tokens.paperDeep}`, background: "rgba(255,255,255,0.6)", fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase", color: tokens.muted }}>
                   {isUnlocked ? "Full curriculum unlocked" : `Free preview · first ${RESULTS_OS_PREVIEW_DAYS} days`}
@@ -315,12 +312,12 @@
           </div>
 
           <div style={{ display: "flex", padding: "0 28px", borderBottom: `1px solid ${tokens.paperDeep}`, overflowX: "auto" }}>
-            {[
-              { k: "today", label: "Today" },
-              { k: "metrics", label: "The Numbers" },
-              { k: "vision", label: "North Star" },
-              { k: "review", label: "Weekly Review" },
-            ].map((tab) => (
+              {[
+                { k: "today", label: "Today" },
+                { k: "metrics", label: "The Numbers" },
+                { k: "vision", label: "The Goal" },
+                { k: "review", label: "Weekly Review" },
+              ].map((tab) => (
               <button key={tab.k} onClick={() => setView(tab.k)} style={{ padding: "16px 16px 14px", background: "transparent", border: "none", borderBottom: `2px solid ${view === tab.k ? tokens.accent : "transparent"}`, fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", color: view === tab.k ? tokens.ink : tokens.muted, cursor: "pointer", flexShrink: 0 }}>{tab.label}</button>
             ))}
           </div>
@@ -328,8 +325,8 @@
           <div style={{ maxWidth: "780px", margin: "0 auto", padding: "32px 28px 120px" }}>
             {!hasProfile && (
               <LockedPanel
-                title="Set your objectives first."
-                body="Results OS now starts with your own offer, target and success vision. Add those once and the dashboard personalises around them instead of using a fixed default plan."
+                title="Set your goal first."
+                body="Results OS works best when it has one real goal to defend. Add that once and the dashboard will keep pointing you back to it."
                 cta="Set objectives"
                 onUnlock={() => setProfileOpen(true)}
               />
@@ -338,7 +335,7 @@
               previewLocked ? (
                 <LockedCurriculumView currentDay={state.currentDay} onUnlock={() => setUnlockOpen(true)} />
               ) : (
-                <TodayView prompt={personalizedPrompt} day={state.currentDay} isComplete={isTodayComplete} onComplete={markTodayComplete} onLog={() => setLogOpen(true)} thisWeek={thisWeek} previewDaysLeft={!isUnlocked ? previewDaysLeft : null} firstName={profile.firstName} offerName={profile.offerName} />
+                <TodayView prompt={personalizedPrompt} day={state.currentDay} isComplete={isTodayComplete} onComplete={markTodayComplete} onLog={() => setLogOpen(true)} thisWeek={thisWeek} previewDaysLeft={!isUnlocked ? previewDaysLeft : null} firstName={profile.firstName} goalName={profile.goalName} />
               )
             )}
             {view === "metrics" && hasProfile && (
@@ -348,13 +345,11 @@
                 thisWeek={thisWeek}
                 onBump={bumpMetric}
                 onSet={setMetric}
-                revenueTotal={state.revenueTotal}
-                setRevenueTotal={(v) => setState((p) => ({ ...p, revenueTotal: v }))}
-                firstClientDate={state.firstClientDate}
-                setFirstClientDate={(v) => setState((p) => ({ ...p, firstClientDate: v }))}
+                focusBlocksTotal={state.focusBlocksTotal}
+                setFocusBlocksTotal={(v) => setState((p) => ({ ...p, focusBlocksTotal: v }))}
                 locked={!isUnlocked}
                 onUnlock={() => setUnlockOpen(true)}
-                targetRevenue={profile.targetRevenue}
+                consistencyTarget={profile.consistencyTarget}
               />
             )}
             {view === "vision" && hasProfile && <VisionView profile={profile} />}
@@ -369,7 +364,7 @@
             </button>
           )}
 
-          <DopamineTrapModal open={trapOpen} onClose={() => setTrapOpen(false)} onPark={(idea) => setState((prev) => ({ ...prev, parkedIdeas: [idea, ...prev.parkedIdeas] }))} parkedIdeas={state.parkedIdeas} currentTask={personalizedPrompt.today} offerName={profile.offerName} />
+          <DopamineTrapModal open={trapOpen} onClose={() => setTrapOpen(false)} onPark={(idea) => setState((prev) => ({ ...prev, parkedIdeas: [idea, ...prev.parkedIdeas] }))} parkedIdeas={state.parkedIdeas} currentTask={personalizedPrompt.today} goalName={profile.goalName} />
           <LogModal open={logOpen} onClose={() => setLogOpen(false)} log={state.log} onAdd={(entry) => setState((prev) => ({ ...prev, log: [entry, ...prev.log] }))} />
           <UnlockResultsModal open={unlockOpen} onClose={() => setUnlockOpen(false)} onUnlock={() => { unlockResults(); setIsUnlocked(true); setUnlockOpen(false); }} />
           <ProfileSetupModal open={profileOpen || !hasProfile} profile={profile} onClose={() => hasProfile && setProfileOpen(false)} onSave={(nextProfile) => { setState((prev) => ({ ...prev, profile: nextProfile })); setProfileOpen(false); }} />
@@ -377,7 +372,7 @@
       );
     }
 
-    function TodayView({ prompt, day, isComplete, onComplete, onLog, thisWeek, previewDaysLeft, firstName, offerName }) {
+    function TodayView({ prompt, day, isComplete, onComplete, onLog, thisWeek, previewDaysLeft, firstName, goalName }) {
       const h = new Date().getHours();
       const greeting = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
       return (
@@ -387,7 +382,7 @@
               Free preview mode. You can explore the first {RESULTS_OS_PREVIEW_DAYS} days before unlocking the full 21-day curriculum.
             </div>
           )}
-          <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.muted, marginBottom: "8px" }}>{greeting}, {firstName?.trim() || "Founder"} · Day {day}</div>
+          <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.muted, marginBottom: "8px" }}>{greeting}, {firstName?.trim() || "friend"} · Day {day}</div>
           <h2 style={{ fontFamily: tokens.fontDisplay, fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 400, lineHeight: 1, letterSpacing: "-0.02em", margin: "0 0 32px", fontStyle: "italic" }}>{prompt.title}</h2>
           <p style={{ fontFamily: tokens.fontDisplay, fontSize: "20px", lineHeight: 1.5, color: tokens.ink, margin: "0 0 40px", fontWeight: 400 }}>{prompt.body}</p>
 
@@ -407,7 +402,7 @@
             <div className="results-mobile-grid-4" style={{ gridTemplateColumns: "repeat(4, 1fr)", gap: "16px" }}>
               {STAGE_1_METRICS.map((m) => (
                 <div key={m.key}>
-                  <div style={{ fontFamily: tokens.fontDisplay, fontSize: "32px", fontWeight: 500, color: m.key === "revenue" && (thisWeek[m.key] || 0) > 0 ? tokens.green : tokens.ink, lineHeight: 1 }}>{m.isMoney ? `£${thisWeek[m.key] || 0}` : thisWeek[m.key] || 0}</div>
+                  <div style={{ fontFamily: tokens.fontDisplay, fontSize: "32px", fontWeight: 500, color: (thisWeek[m.key] || 0) > 0 ? tokens.green : tokens.ink, lineHeight: 1 }}>{thisWeek[m.key] || 0}</div>
                   <div style={{ fontFamily: tokens.fontMono, fontSize: "9px", letterSpacing: "0.14em", textTransform: "uppercase", color: tokens.muted, marginTop: "4px", lineHeight: 1.3 }}>{m.label}</div>
                 </div>
               ))}
@@ -416,44 +411,41 @@
 
           <details>
             <summary style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.20em", textTransform: "uppercase", color: tokens.muted, cursor: "pointer", listStyle: "none", padding: "12px 0" }}>The hard truth at this stage</summary>
-            <div style={{ padding: "20px", background: tokens.paperDeep, borderLeft: `2px solid ${tokens.accent}`, fontFamily: tokens.fontDisplay, fontSize: "16px", fontStyle: "italic", lineHeight: 1.5, color: tokens.ink, marginTop: "8px" }}>You&apos;re in the proof stage. This means: no content rabbit holes, no busywork redesigns, no new offer spirals — until you have real demand for {offerName || "your offer"}. Outreach is the verb that pays. Everything else compounds after proof.</div>
+            <div style={{ padding: "20px", background: tokens.paperDeep, borderLeft: `2px solid ${tokens.accent}`, fontFamily: tokens.fontDisplay, fontSize: "16px", fontStyle: "italic", lineHeight: 1.5, color: tokens.ink, marginTop: "8px" }}>You do not need another reinvention. You need more reps on {goalName || "the goal you chose"}. When you feel the urge to switch, simplify the next step instead.</div>
           </details>
         </div>
       );
     }
 
-    function MetricsView({ metrics, weekKey, thisWeek, onBump, onSet, revenueTotal, setRevenueTotal, firstClientDate, setFirstClientDate, locked, onUnlock, targetRevenue }) {
+    function MetricsView({ metrics, weekKey, thisWeek, onBump, onSet, focusBlocksTotal, setFocusBlocksTotal, locked, onUnlock, consistencyTarget }) {
       return (
         <div>
           <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.muted, marginBottom: "8px" }}>Week of {weekKey}</div>
           <h2 style={{ fontFamily: tokens.fontDisplay, fontSize: "clamp(32px, 4.5vw, 48px)", fontWeight: 400, lineHeight: 1, letterSpacing: "-0.02em", margin: "0 0 12px", fontStyle: "italic" }}>The only numbers that matter.</h2>
-          <p style={{ fontFamily: tokens.fontBody, fontSize: "15px", color: tokens.muted, lineHeight: 1.5, marginBottom: "40px" }}>At £0, only four numbers count. Tap to add. The goal is volume of outreach until something paid lands.</p>
+          <p style={{ fontFamily: tokens.fontBody, fontSize: "15px", color: tokens.muted, lineHeight: 1.5, marginBottom: "40px" }}>Track the behaviours that keep you moving instead of the feelings that keep changing. Tap to add as the week unfolds.</p>
           {locked && (
             <div style={{ padding: "16px 18px", marginBottom: "22px", border: `1px solid ${tokens.paperDeep}`, background: "rgba(255,255,255,0.5)", fontFamily: tokens.fontBody, fontSize: "14px", color: tokens.muted, lineHeight: 1.55 }}>
-              Preview includes the dashboard layout. Unlock Results OS to track the full metric system, total revenue, first-client milestone, and past-week archive.
+              Preview includes the dashboard layout. Unlock Results OS to track the full metric system, your total focus count, and past-week archive.
             </div>
           )}
           {STAGE_1_METRICS.map((m) => <MetricRow key={m.key} label={m.label} value={thisWeek[m.key] || 0} target={m.target_per_week} isMoney={m.isMoney} onIncrement={() => onBump(m.key, 1)} onDecrement={() => onBump(m.key, -1)} onSet={(v) => onSet(m.key, v)} disabled={locked} />)}
 
           <div style={{ marginTop: "48px", padding: "32px", background: tokens.ink, color: tokens.paper, opacity: locked ? 0.55 : 1 }}>
-            <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.accent, marginBottom: "12px" }}>Total revenue earned</div>
+            <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.accent, marginBottom: "12px" }}>Total focus blocks completed</div>
             <div style={{ display: "flex", alignItems: "baseline", gap: "12px" }}>
-              <span style={{ fontFamily: tokens.fontDisplay, fontSize: "20px", color: tokens.accentSoft }}>£</span>
-              <input type="number" disabled={locked} value={revenueTotal} onChange={(e) => setRevenueTotal(Number(e.target.value) || 0)} style={{ fontFamily: tokens.fontDisplay, fontSize: "56px", fontWeight: 500, background: "transparent", border: "none", color: tokens.paper, outline: "none", width: "100%", padding: 0 }} />
+              <input type="number" disabled={locked} value={focusBlocksTotal} onChange={(e) => setFocusBlocksTotal(Number(e.target.value) || 0)} style={{ fontFamily: tokens.fontDisplay, fontSize: "56px", fontWeight: 500, background: "transparent", border: "none", color: tokens.paper, outline: "none", width: "100%", padding: 0 }} />
             </div>
-            <div style={{ fontFamily: tokens.fontMono, fontSize: "11px", color: tokens.accentSoft, marginTop: "8px", letterSpacing: "0.1em" }}>Goal: {formatCurrencyGoal(targetRevenue)}</div>
+            <div style={{ fontFamily: tokens.fontMono, fontSize: "11px", color: tokens.accentSoft, marginTop: "8px", letterSpacing: "0.1em" }}>Consistency target: {Number(consistencyTarget) || DEFAULT_PROFILE.consistencyTarget} days on track per week</div>
             <div style={{ marginTop: "16px", height: "4px", background: "rgba(244,241,234,0.15)", position: "relative" }}>
-              <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${Math.min(100, (revenueTotal / Math.max(Number(targetRevenue) || 1, 1)) * 100)}%`, background: tokens.accent, transition: "width 0.4s ease" }} />
+              <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${Math.min(100, ((thisWeek.days_on_track || 0) / Math.max(Number(consistencyTarget) || 1, 1)) * 100)}%`, background: tokens.accent, transition: "width 0.4s ease" }} />
             </div>
-            <div style={{ marginTop: "12px", fontFamily: tokens.fontMono, fontSize: "10px", color: tokens.accentSoft, letterSpacing: "0.1em" }}>{((revenueTotal / Math.max(Number(targetRevenue) || 1, 1)) * 100).toFixed(4)}% of the way there</div>
+            <div style={{ marginTop: "12px", fontFamily: tokens.fontMono, fontSize: "10px", color: tokens.accentSoft, letterSpacing: "0.1em" }}>{Math.round(((thisWeek.days_on_track || 0) / Math.max(Number(consistencyTarget) || 1, 1)) * 100)}% of this week&apos;s consistency target</div>
           </div>
 
-          {!locked && !firstClientDate && revenueTotal > 0 && <button onClick={() => setFirstClientDate(todayKey())} style={{ marginTop: "20px", width: "100%", padding: "16px 24px", background: tokens.green, color: tokens.paper, border: "none", fontFamily: tokens.fontMono, fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", cursor: "pointer" }}>Mark today as first-client day</button>}
-          {firstClientDate && <div style={{ marginTop: "20px", padding: "20px", border: `1px solid ${tokens.green}`, fontFamily: tokens.fontDisplay, fontSize: "16px", fontStyle: "italic", color: tokens.ink }}>First paying client: <strong>{firstClientDate}</strong>. Everything compounds from here.</div>}
           {locked ? (
             <LockedPanel
-              title="Past weeks, revenue tracker, and milestone log are part of the paid unlock."
-              body="The free preview shows the structure. The paid version turns it into a real operating system."
+              title="Past weeks and full tracking are part of the paid unlock."
+              body="The free preview shows the structure. The paid version turns it into a real operating system for staying on track."
               cta="Unlock full Results OS"
               onUnlock={onUnlock}
             />
@@ -499,10 +491,10 @@
             <div key={weekK} style={{ display: "flex", justifyContent: "space-between", gap: "14px", padding: "12px 0", borderBottom: `1px solid ${tokens.paperDeep}`, fontFamily: tokens.fontMono, fontSize: "12px", color: tokens.muted, flexWrap: "wrap" }}>
               <span>{weekK}</span>
               <span style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
-                <span>{vals.pitches_sent || 0} pitches</span>
-                <span>{vals.replies_received || 0} replies</span>
-                <span>{vals.calls_booked || 0} calls</span>
-                <span style={{ color: (vals.revenue || 0) > 0 ? tokens.green : tokens.muted }}>£{vals.revenue || 0}</span>
+                <span>{vals.focus_blocks || 0} focus</span>
+                <span>{vals.days_on_track || 0} on-track</span>
+                <span>{vals.ideas_parked || 0} parked</span>
+                <span style={{ color: (vals.distractions_resisted || 0) > 0 ? tokens.green : tokens.muted }}>{vals.distractions_resisted || 0} resisted</span>
               </span>
             </div>
           ))}
@@ -511,23 +503,22 @@
     }
 
     function VisionView({ profile }) {
-      const targetRevenueLabel = formatCurrencyGoal(profile.targetRevenue);
       return (
         <div>
-          <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.muted, marginBottom: "8px" }}>Why you&apos;re doing this</div>
-          <h2 style={{ fontFamily: tokens.fontDisplay, fontSize: "clamp(40px, 6vw, 72px)", fontWeight: 500, lineHeight: 0.95, letterSpacing: "-0.025em", margin: "0 0 32px" }}>{targetRevenueLabel}.<br /><span style={{ fontStyle: "italic", color: tokens.accent }}>On your terms.</span></h2>
-          <p style={{ fontFamily: tokens.fontDisplay, fontSize: "20px", lineHeight: 1.55, color: tokens.ink, marginBottom: "40px" }}>{profile.successVision || DEFAULT_PROFILE.successVision} Keep the target visible so today&apos;s outreach serves the bigger thing you&apos;re actually trying to build.</p>
+          <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.muted, marginBottom: "8px" }}>The goal you&apos;re protecting</div>
+          <h2 style={{ fontFamily: tokens.fontDisplay, fontSize: "clamp(40px, 6vw, 72px)", fontWeight: 500, lineHeight: 0.95, letterSpacing: "-0.025em", margin: "0 0 32px" }}>{profile.goalName || "Your goal"}<br /><span style={{ fontStyle: "italic", color: tokens.accent }}>{profile.goalDeadline ? `by ${profile.goalDeadline}` : "one step at a time"}</span></h2>
+          <p style={{ fontFamily: tokens.fontDisplay, fontSize: "20px", lineHeight: 1.55, color: tokens.ink, marginBottom: "40px" }}>{profile.successVision || DEFAULT_PROFILE.successVision} Keep this visible so today&apos;s effort serves something real instead of whichever idea feels loudest.</p>
 
           <div style={{ padding: "32px", background: tokens.paperDeep, borderLeft: `3px solid ${tokens.accent}`, marginBottom: "40px" }}>
             <div style={{ fontFamily: tokens.fontMono, fontSize: "10px", letterSpacing: "0.24em", textTransform: "uppercase", color: tokens.accent, marginBottom: "16px" }}>The map</div>
-            <Stage label="Stage 1" range="Start → First sales" focus="Validate demand. Keep the work simple." current={true} />
-            <Stage label="Stage 2" range="Early sales → Repeatable sales" focus="Tighten the offer and improve conversion." />
-            <Stage label="Stage 3" range="Repeatable sales → Stable revenue" focus="Systemise delivery and build proof." />
-            <Stage label="Stage 4" range="Stable revenue → Team leverage" focus="Reduce bottlenecks and increase capacity." />
-            <Stage label="Stage 5" range="Leverage → Long-term goal" focus="Scale deliberately toward the target you set." />
+            <Stage label="Stage 1" range="Choose" focus="Pick one goal worth protecting." current={true} />
+            <Stage label="Stage 2" range="Simplify" focus="Shrink the next move until it is easy to start." />
+            <Stage label="Stage 3" range="Protect" focus="Defend your attention from shiny detours." />
+            <Stage label="Stage 4" range="Repeat" focus="Build consistency until the work feels normal." />
+            <Stage label="Stage 5" range="Review" focus="Use evidence to reset instead of starting over." />
           </div>
 
-          <div style={{ padding: "24px", border: `1px solid ${tokens.ink}`, fontFamily: tokens.fontDisplay, fontSize: "17px", fontStyle: "italic", lineHeight: 1.5 }}>Most people stall not because they aim too low but because they try to skip stages. Stage 1 looks boring. It is the foundation everything else stands on. Don&apos;t skip it. Don&apos;t dilute it.</div>
+          <div style={{ padding: "24px", border: `1px solid ${tokens.ink}`, fontFamily: tokens.fontDisplay, fontSize: "17px", fontStyle: "italic", lineHeight: 1.5 }}>Most people do not fail because they lack ideas. They fail because they let a new idea interrupt the old one before it had time to work.</div>
         </div>
       );
     }
@@ -543,17 +534,17 @@
     }
 
     function ReviewView({ weeklyReviews, onSubmitReview, locked, onUnlock }) {
-      const [pitches, setPitches] = useState("");
-      const [replies, setReplies] = useState("");
-      const [calls, setCalls] = useState("");
-      const [revenue, setRevenue] = useState("");
+      const [focusBlocks, setFocusBlocks] = useState("");
+      const [daysOnTrack, setDaysOnTrack] = useState("");
+      const [ideasParked, setIdeasParked] = useState("");
+      const [distractionsResisted, setDistractionsResisted] = useState("");
       const [lesson, setLesson] = useState("");
       const [cut, setCut] = useState("");
 
       const submit = () => {
         if (!lesson.trim()) return;
-        onSubmitReview({ weekKey: startOfWeekKey(), submittedAt: Date.now(), pitches: Number(pitches) || 0, replies: Number(replies) || 0, calls: Number(calls) || 0, revenue: Number(revenue) || 0, lesson: lesson.trim(), cut: cut.trim() });
-        setPitches(""); setReplies(""); setCalls(""); setRevenue(""); setLesson(""); setCut("");
+        onSubmitReview({ weekKey: startOfWeekKey(), submittedAt: Date.now(), focusBlocks: Number(focusBlocks) || 0, daysOnTrack: Number(daysOnTrack) || 0, ideasParked: Number(ideasParked) || 0, distractionsResisted: Number(distractionsResisted) || 0, lesson: lesson.trim(), cut: cut.trim() });
+        setFocusBlocks(""); setDaysOnTrack(""); setIdeasParked(""); setDistractionsResisted(""); setLesson(""); setCut("");
       };
 
       const isFriday = new Date().getDay() === 5;
@@ -573,9 +564,9 @@
           ) : (
             <>
               <div style={{ display: "grid", gap: "20px", marginBottom: "32px" }}>
-                <NumGrid pitches={pitches} setPitches={setPitches} replies={replies} setReplies={setReplies} calls={calls} setCalls={setCalls} revenue={revenue} setRevenue={setRevenue} />
+                <NumGrid focusBlocks={focusBlocks} setFocusBlocks={setFocusBlocks} daysOnTrack={daysOnTrack} setDaysOnTrack={setDaysOnTrack} ideasParked={ideasParked} setIdeasParked={setIdeasParked} distractionsResisted={distractionsResisted} setDistractionsResisted={setDistractionsResisted} />
                 <ReviewQ q="What&apos;s the ONE thing that worked this week?" value={lesson} onChange={setLesson} placeholder="One sentence. The thing you'd do more of." />
-                <ReviewQ q="What&apos;s the ONE thing you'd cut?" value={cut} onChange={setCut} placeholder="One sentence. The thing that ate time but didn't pay." />
+                <ReviewQ q="What&apos;s the ONE thing you&apos;d cut?" value={cut} onChange={setCut} placeholder="One sentence. The thing that kept pulling you off track." />
               </div>
               <button onClick={submit} disabled={!lesson.trim()} style={{ width: "100%", padding: "18px 24px", background: tokens.ink, color: tokens.paper, border: "none", fontFamily: tokens.fontMono, fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", cursor: lesson.trim() ? "pointer" : "not-allowed", opacity: lesson.trim() ? 1 : 0.4 }}>Save weekly review</button>
             </>
@@ -588,7 +579,7 @@
                   <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", fontFamily: tokens.fontMono, fontSize: "11px", color: tokens.muted, marginBottom: "10px", flexWrap: "wrap" }}>
                     <span>{r.weekKey}</span>
                     <span style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-                      <span>{r.pitches}p</span><span>{r.replies}r</span><span>{r.calls}c</span><span style={{ color: r.revenue > 0 ? tokens.green : tokens.muted }}>£{r.revenue}</span>
+                      <span>{r.focusBlocks} focus</span><span>{r.daysOnTrack} on-track</span><span>{r.ideasParked} parked</span><span style={{ color: r.distractionsResisted > 0 ? tokens.green : tokens.muted }}>{r.distractionsResisted} resisted</span>
                     </span>
                   </div>
                   {r.lesson && <div style={{ fontFamily: tokens.fontDisplay, fontSize: "16px", fontStyle: "italic", color: tokens.ink, marginBottom: "6px" }}>↑ {r.lesson}</div>}
@@ -631,12 +622,12 @@
       );
     }
 
-    function NumGrid({ pitches, setPitches, replies, setReplies, calls, setCalls, revenue, setRevenue }) {
+    function NumGrid({ focusBlocks, setFocusBlocks, daysOnTrack, setDaysOnTrack, ideasParked, setIdeasParked, distractionsResisted, setDistractionsResisted }) {
       const fields = [
-        { label: "Pitches sent", val: pitches, set: setPitches },
-        { label: "Replies", val: replies, set: setReplies },
-        { label: "Calls", val: calls, set: setCalls },
-        { label: "Revenue (£)", val: revenue, set: setRevenue },
+        { label: "Focus blocks", val: focusBlocks, set: setFocusBlocks },
+        { label: "Days on track", val: daysOnTrack, set: setDaysOnTrack },
+        { label: "Ideas parked", val: ideasParked, set: setIdeasParked },
+        { label: "Distractions resisted", val: distractionsResisted, set: setDistractionsResisted },
       ];
       return (
         <div className="results-review-stats" style={{ gridTemplateColumns: "repeat(2, 1fr)", gap: "16px" }}>
@@ -659,7 +650,7 @@
       );
     }
 
-    function DopamineTrapModal({ open, onClose, onPark, parkedIdeas, currentTask, offerName }) {
+    function DopamineTrapModal({ open, onClose, onPark, parkedIdeas, currentTask, goalName }) {
       const [step, setStep] = useState("idea");
       const [idea, setIdea] = useState("");
       const [a1, setA1] = useState(null);
@@ -677,8 +668,8 @@
       const verdict = dopamineScore >= 2
         ? { tone: "stop", title: "This is your dopamine talking.", body: "Park it. Don't act. Get back to today's actual task." }
         : dopamineScore === 1
-        ? { tone: "wait", title: "Maybe later, not now.", body: "Park it. Revisit next week. If it still feels worth it, we'll talk." }
-        : { tone: "ok", title: "This might be strategic.", body: "Still don't act today. Bring it to the next coaching session and we'll decide together." };
+        ? { tone: "wait", title: "Maybe later, not now.", body: "Park it. Revisit it after this week's important work is done." }
+        : { tone: "ok", title: "This might be useful.", body: "Still park it for today. Finish today's task first, then decide with a clear head." };
 
       const finalize = () => {
         onPark({ text: idea, at: Date.now(), verdict: verdict.tone, dopamine_score: dopamineScore });
@@ -697,9 +688,9 @@
                 <div style={{ marginTop: "20px" }}><button onClick={() => setStep("q1")} disabled={!idea.trim()} style={primaryBtn(!idea.trim())}>Next</button></div>
               </>
             )}
-            {step === "q1" && <TrapQ n="01" q="Will this make you money in the next 90 days?" onYes={() => { setA1(true); setStep("q2"); }} onNo={() => { setA1(false); setStep("q2"); }} />}
-            {step === "q2" && <TrapQ n="02" q={`Does it serve the offer you're already trying to sell (${offerName || "your offer"})?`} onYes={() => { setA2(true); setStep("q3"); }} onNo={() => { setA2(false); setStep("q3"); }} />}
-            {step === "q3" && <TrapQ n="03" q="Honestly — is this your strategic brain or your dopamine brain?" yesLabel="Strategic" noLabel="Dopamine" onYes={() => { setA3(true); setStep("verdict"); }} onNo={() => { setA3(false); setStep("verdict"); }} />}
+            {step === "q1" && <TrapQ n="01" q={`Does this directly help ${goalName || "your current goal"}?`} onYes={() => { setA1(true); setStep("q2"); }} onNo={() => { setA1(false); setStep("q2"); }} />}
+            {step === "q2" && <TrapQ n="02" q="Does this need action this week?" yesLabel="Yes, this week" noLabel="No, can wait" onYes={() => { setA2(true); setStep("q3"); }} onNo={() => { setA2(false); setStep("q3"); }} />}
+            {step === "q3" && <TrapQ n="03" q="Honestly: is this a real next step or a relief hit?" yesLabel="Real step" noLabel="Relief hit" onYes={() => { setA3(true); setStep("verdict"); }} onNo={() => { setA3(false); setStep("verdict"); }} />}
             {step === "verdict" && (
               <>
                 <h3 style={{ ...modalTitle, color: verdict.tone === "stop" ? tokens.accent : verdict.tone === "wait" ? tokens.ink : tokens.green }}>{verdict.title}</h3>
@@ -860,7 +851,7 @@
 
       if (!open) return null;
 
-      const canClose = Boolean(profile.offerName?.trim());
+      const canClose = Boolean(profile.goalName?.trim());
 
       return (
         <div onClick={() => canClose && onClose()} style={modalOverlay}>
@@ -870,7 +861,7 @@
             </div>
             <h3 style={modalTitle}>Make Results OS fit the person using it.</h3>
             <p style={{ fontFamily: tokens.fontBody, fontSize: "14px", color: tokens.muted, lineHeight: 1.6, marginBottom: "24px" }}>
-              These details personalise the dashboard so users see their own offer, focus and target instead of a fixed default plan.
+              These details personalise the dashboard so it knows what you&apos;re trying to protect when a new idea turns up.
             </p>
 
             <div style={{ display: "grid", gap: "14px" }}>
@@ -879,25 +870,29 @@
                 <input value={draft.firstName} onChange={(e) => setDraft((prev) => ({ ...prev, firstName: e.target.value }))} placeholder="e.g. Alex" style={setupInputStyle} />
               </label>
               <label>
-                <div style={setupLabelStyle}>Offer or business name</div>
-                <input value={draft.offerName} onChange={(e) => setDraft((prev) => ({ ...prev, offerName: e.target.value }))} placeholder="e.g. Strategy intensives" style={setupInputStyle} />
+                <div style={setupLabelStyle}>Main goal</div>
+                <input value={draft.goalName} onChange={(e) => setDraft((prev) => ({ ...prev, goalName: e.target.value }))} placeholder="e.g. Finish my course outline" style={setupInputStyle} />
               </label>
               <label>
-                <div style={setupLabelStyle}>Revenue target</div>
-                <input type="number" value={draft.targetRevenue} onChange={(e) => setDraft((prev) => ({ ...prev, targetRevenue: Number(e.target.value) || 0 }))} placeholder="1000000" style={setupInputStyle} />
+                <div style={setupLabelStyle}>Goal deadline</div>
+                <input value={draft.goalDeadline} onChange={(e) => setDraft((prev) => ({ ...prev, goalDeadline: e.target.value }))} placeholder="e.g. 30 June" style={setupInputStyle} />
               </label>
               <label>
                 <div style={setupLabelStyle}>Current focus</div>
-                <input value={draft.currentFocus} onChange={(e) => setDraft((prev) => ({ ...prev, currentFocus: e.target.value }))} placeholder="e.g. book more qualified calls" style={setupInputStyle} />
+                <input value={draft.currentFocus} onChange={(e) => setDraft((prev) => ({ ...prev, currentFocus: e.target.value }))} placeholder="e.g. write the next lesson, not redesign the whole thing" style={setupInputStyle} />
+              </label>
+              <label>
+                <div style={setupLabelStyle}>Days on track target</div>
+                <input type="number" value={draft.consistencyTarget} onChange={(e) => setDraft((prev) => ({ ...prev, consistencyTarget: Number(e.target.value) || 0 }))} placeholder="5" style={setupInputStyle} />
               </label>
               <label>
                 <div style={setupLabelStyle}>Success vision</div>
-                <textarea value={draft.successVision} onChange={(e) => setDraft((prev) => ({ ...prev, successVision: e.target.value }))} rows={3} placeholder="Describe the business and life this is meant to support." style={textareaStyle} />
+                <textarea value={draft.successVision} onChange={(e) => setDraft((prev) => ({ ...prev, successVision: e.target.value }))} rows={3} placeholder="Describe what gets better in your life if you actually stay with this goal." style={textareaStyle} />
               </label>
             </div>
 
             <div style={{ marginTop: "20px" }}>
-              <button onClick={() => onSave({ ...DEFAULT_PROFILE, ...draft, offerName: draft.offerName.trim() })} disabled={!draft.offerName.trim()} style={primaryBtn(!draft.offerName.trim())}>
+              <button onClick={() => onSave({ ...DEFAULT_PROFILE, ...draft, goalName: draft.goalName.trim() })} disabled={!draft.goalName.trim()} style={primaryBtn(!draft.goalName.trim())}>
                 Save objectives
               </button>
             </div>
