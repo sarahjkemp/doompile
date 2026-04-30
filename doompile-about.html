@@ -4,6 +4,32 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>About — Doom Pile</title>
+<meta name="description" content="Why Doom Pile exists, who built it, and how it fits into the wider SJK Labs ecosystem.">
+<link rel="canonical" href="https://doompile.co.uk/doompile-about.html">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://doompile.co.uk/#organization",
+      "name": "Doom Pile",
+      "url": "https://doompile.co.uk/",
+      "parentOrganization": {
+        "@type": "Organization",
+        "name": "SJK Labs",
+        "url": "https://sjklabs.co/"
+      }
+    },
+    {
+      "@type": "WebPage",
+      "url": "https://doompile.co.uk/doompile-about.html",
+      "name": "About — Doom Pile",
+      "about": { "@id": "https://doompile.co.uk/#organization" }
+    }
+  ]
+}
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -78,6 +104,17 @@ main { max-width: 720px; margin: 0 auto; padding: 4rem 1.5rem 6rem; }
   transition: opacity 0.15s;
 }
 .btn:hover { opacity: 0.85; }
+.ecosystem-box {
+  background: linear-gradient(135deg, rgba(124,111,224,0.15), rgba(124,111,224,0.05));
+  border: 1px solid rgba(124,111,224,0.28);
+  border-radius: 18px;
+  padding: 1.3rem;
+  margin-top: 2rem;
+}
+.ecosystem-box h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; margin-bottom: 0.7rem; }
+.ecosystem-box p { font-size: 0.9rem; color: var(--muted2); margin-bottom: 0.9rem; }
+.ecosystem-links { display: flex; flex-wrap: wrap; gap: 0.85rem; }
+.ecosystem-links a { color: var(--purple-light); text-decoration: none; font-size: 0.88rem; }
 footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--muted); }
 footer a { color: var(--muted); text-decoration: none; margin: 0 0.5rem; }
 footer a:hover { color: var(--text); }
@@ -165,7 +202,7 @@ footer a:hover { color: var(--text); }
   </div>
 
   <div class="quote">
-    "AI help for the piles you keep avoiding."
+    "Help for the piles you keep avoiding."
   </div>
 
   <div class="section">
@@ -185,6 +222,16 @@ footer a:hover { color: var(--text); }
     <p>Doom Pile also connects into <a href="https://notbuiltforthis.co" target="_blank" rel="noreferrer" style="color:var(--purple-light);text-decoration:none">Not Built For This</a>, the media house that links into the product and gives it a wider editorial home.</p>
   </div>
 
+  <div class="ecosystem-box">
+    <h3>This product is part of the SJK Labs ecosystem</h3>
+    <p>SJK Labs is the authority hub. The Legibility Gap is the core idea. Not Built For This is the supporting media property. Doom Pile is the product proof showing the same thinking applied to a real executive-function problem.</p>
+    <div class="ecosystem-links">
+      <a href="/why-this-exists/">Why this exists →</a>
+      <a href="https://sjklabs.co/legibility-gap" target="_blank" rel="noreferrer">The Legibility Gap →</a>
+      <a href="https://sjklabs.co/ecosystem" target="_blank" rel="noreferrer">See the ecosystem →</a>
+    </div>
+  </div>
+
   <div class="cta-box">
     <h3>Ready to get unstuck?</h3>
     <p>Try every pile once for free, then unlock full access for £9.99/year at the early supporter price.</p>
@@ -195,7 +242,9 @@ footer a:hover { color: var(--text); }
 <footer>
   © 2026 SJK Labs ·
   <a href="/">App</a>
+  <a href="/why-this-exists/">Why this exists</a>
   <a href="/doompile-about.html">About</a>
+  <a href="https://www.notbuiltforthis.co/" target="_blank" rel="noreferrer">Not Built For This</a>
   <a href="/doompile-privacy.html">Privacy</a>
   <a href="/doompile-terms.html">Terms</a>
   <a href="mailto:hello@doompile.co.uk">Email</a>
